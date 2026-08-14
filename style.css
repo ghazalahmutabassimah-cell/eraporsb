@@ -3,72 +3,104 @@
    ========================================================= */
 
 /* Transisi Halus */
-button, input, select, textarea {
-    transition: all 0.2s ease-in-out;
+button,
+input,
+select,
+textarea {
+  transition: all 0.2s ease-in-out;
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+  background: #f1f1f1;
 }
 ::-webkit-scrollbar-thumb {
-    background: #16a34a;
-    border-radius: 4px;
+  background: #16a34a;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #15803d;
+  background: #15803d;
 }
 
 /* =========================================================
    ATURAN CETAK (PRINT) RAPORT A4
    ========================================================= */
 @media print {
-    /* Sembunyikan elemen navigasi & tombol UI */
-    body * {
-        visibility: hidden;
-    }
+  /* 1. Atur Pengaturan Kertas Print */
+  @page {
+    size: A4 portrait;
+    margin: 1.2cm 1.5cm;
+  }
 
-    /* Tampilkan hanya area lembar cetak raport */
-    #printable-raport, #printable-raport * {
-        visibility: visible;
-    }
+  /* 2. Sembunyikan Seluruh Elemen Aplikasi / UI */
+  body {
+    background: white !important;
+    color: black !important;
+  }
 
-    #printable-raport {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        background: white !important;
-        color: black !important;
-        box-shadow: none !important;
-        border: none !important;
-    }
+  .no-print,
+  header,
+  aside,
+  button,
+  select,
+  input,
+  textarea,
+  .flex-col,
+  form {
+    display: none !important;
+  }
 
-    .no-print {
-        display: none !important;
-    }
+  /* 3. Sembunyikan elemen utama dari alur dokumen */
+  body * {
+    visibility: hidden;
+  }
 
-    /* Setting Ukuran Kertas A4 */
-    @page {
-        size: A4 portrait;
-        margin: 1.2cm 1.5cm;
-    }
+  /* 4. Tampilkan HANYA kontainer Raport dan Anak Elemennya */
+  #printable-raport,
+  #printable-raport * {
+    visibility: visible;
+  }
 
-    /* Mencegah pemotongan tabel di tengah halaman */
-    table {
-        page-break-inside: auto;
-    }
-    tr {
-        page-break-inside: avoid;
-        page-break-after: auto;
-    }
-    thead {
-        display: table-header-group;
-    }
+  /* 5. Atur Posisi Raport Agar Pas Di Halaman Kertas */
+  #printable-raport {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    border: none !important;
+    overflow: visible !important;
+  }
+
+  /* 6. Memastikan Cetakan Berwarna (Termasuk Watermark & Background Tabel) */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* 7. Mencegah Pemotongan Baris Tabel & Tanda Tangan */
+  table {
+    page-break-inside: auto;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  .break-inside-avoid {
+    page-break-inside: avoid;
+  }
 }
