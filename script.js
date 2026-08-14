@@ -603,7 +603,7 @@ function renderPrintableData() {
   const selectedSiswa =
     listSiswa.find((s) => s.nisn === nisnVal) || listSiswa[0];
 
-  // 1. Update Biodata Murid & Pengaturan Umumi Rapor
+  // 1. Update Biodata Murid & Pengaturan Umum Rapor
   const printNama = document.getElementById("print-nama-siswa");
   const printNisn = document.getElementById("print-nisn-siswa");
   const printKelas = document.getElementById("print-kelas-siswa");
