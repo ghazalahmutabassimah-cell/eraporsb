@@ -407,6 +407,16 @@ const dataSiswaByKelas = {
   ],
 };
 
+// Database Wali Kelas Per Kelas
+let dataWaliKelas = [
+  { kelas: "1", nama: "Ustadzah. Fatimah, S.Pd", nip: "19900115 202101 2 001" },
+  { kelas: "2", nama: "Ustadzah. Yuni, S.Pd.I", nip: "19880512 202101 1 001" },
+  { kelas: "3", nama: "Ust. Ahmad Syauqi, M.Pd", nip: "19850320 202001 1 002" },
+  { kelas: "4", nama: "Ustadzah. Maryam, S.Hum", nip: "19920810 202201 2 003" },
+  { kelas: "5", nama: "Ust. Husen, S.Pd.I", nip: "19880512 202101 1 002" },
+  { kelas: "6", nama: "Ust. Abdullah, S.S", nip: "19830411 201901 1 004" },
+];
+
 // Kredensial Login
 const CREDENTIALS = {
   admin: {
@@ -725,6 +735,8 @@ function switchTab(tabName) {
     renderTabelKelolaMapel();
   } else if (tabName === "input-siswa") {
     renderTabelSiswa();
+  } else if (tabName === "input-walikelas") {
+    renderTabelWaliKelas();
   } else if (tabName === "input-tahfidz") {
     updateTahfidzDropdownSiswa();
   } else if (tabName === "input-kehadiran") {
@@ -888,19 +900,99 @@ function hapusSiswa(kelas, nisn) {
 }
 
 /**
- * Menyimpan Data Wali Kelas
+ * Render Tabel Daftar Wali Kelas
+ */
+function renderTabelWaliKelas() {
+  const tbody = document.getElementById("table-walikelas-body");
+  if (!tbody) return;
+
+  tbody.innerHTML = "";
+
+  if (dataWaliKelas.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-3 text-center text-gray-400">Belum ada data wali kelas.</td></tr>`;
+    return;
+  }
+
+  // Urutkan daftar wali kelas berdasarkan nomor kelas
+  dataWaliKelas.sort((a, b) => a.kelas - b.kelas);
+
+  dataWaliKelas.forEach((w, index) => {
+    tbody.innerHTML += `
+      <tr class="hover:bg-gray-50 transition">
+        <td class="px-4 py-3 font-semibold text-gray-500">${index + 1}</td>
+        <td class="px-4 py-3 font-bold text-brand-800">Kelas ${w.kelas}</td>
+        <td class="px-4 py-3 font-bold text-gray-800">${w.nama}</td>
+        <td class="px-4 py-3 text-xs text-gray-600">${w.nip}</td>
+        <td class="px-4 py-3 text-center space-x-1">
+          <button type="button" onclick="editWaliKelas('${w.kelas}')" class="text-blue-600 hover:text-blue-800 text-xs font-semibold px-2 py-1 rounded hover:bg-blue-50 transition">
+            <i class="fa-solid fa-pen-to-square mr-1"></i> Edit
+          </button>
+          <button type="button" onclick="hapusWaliKelas('${w.kelas}')" class="text-red-600 hover:text-red-800 text-xs font-semibold px-2 py-1 rounded hover:bg-red-50 transition">
+            <i class="fa-solid fa-trash mr-1"></i> Hapus
+          </button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+/**
+ * Menyimpan / Memperbarui Data Wali Kelas
  */
 function simpanWaliKelas(e) {
   e.preventDefault();
-  const nama = document.getElementById("walikelas-nama").value;
   const kelas = document.getElementById("walikelas-kelas").value;
+  const nip = document.getElementById("walikelas-nip").value.trim();
+  const nama = document.getElementById("walikelas-nama").value.trim();
 
+  // Cari apakah wali kelas untuk kelas ini sudah terdaftar
+  const index = dataWaliKelas.findIndex((w) => w.kelas === kelas);
+
+  if (index !== -1) {
+    dataWaliKelas[index] = { kelas, nama, nip };
+  } else {
+    dataWaliKelas.push({ kelas, nama, nip });
+  }
+
+  // Perbarui display header jika kelas yang diubah cocok dengan profil aktif
   const nameDisplay = document.getElementById("user-display-name");
   const roleDisplay = document.getElementById("user-display-role");
-  if (nameDisplay) nameDisplay.textContent = nama;
-  if (roleDisplay) roleDisplay.textContent = `Wali ${kelas}`;
+  if (kelas === "5" && nameDisplay && roleDisplay) {
+    nameDisplay.textContent = nama;
+    roleDisplay.textContent = `Wali Kelas ${kelas}`;
+  }
 
-  alert("Alhamdulillah! Data Wali Kelas berhasil diperbarui.");
+  alert(
+    `Alhamdulillah! Data Wali Kelas untuk Kelas ${kelas} berhasil disimpan.`,
+  );
+
+  // Reset form & render ulang tabel wali kelas
+  document.getElementById("walikelas-nip").value = "";
+  document.getElementById("walikelas-nama").value = "";
+  renderTabelWaliKelas();
+}
+
+/**
+ * Mengisi form untuk mengedit data Wali Kelas
+ */
+function editWaliKelas(kelas) {
+  const data = dataWaliKelas.find((w) => w.kelas === kelas);
+  if (data) {
+    document.getElementById("walikelas-kelas").value = data.kelas;
+    document.getElementById("walikelas-nip").value = data.nip;
+    document.getElementById("walikelas-nama").value = data.nama;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+}
+
+/**
+ * Menghapus Data Wali Kelas
+ */
+function hapusWaliKelas(kelas) {
+  if (confirm(`Apakah Anda yakin ingin menghapus data Wali Kelas ${kelas}?`)) {
+    dataWaliKelas = dataWaliKelas.filter((w) => w.kelas !== kelas);
+    renderTabelWaliKelas();
+  }
 }
 
 /**

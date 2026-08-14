@@ -232,6 +232,7 @@
                 <i class="fa-solid fa-book-open-reader w-6 text-brand-600"></i>
                 Tahfidz, Tasmi' & Ummi
               </button>
+
               <button
                 onclick="switchTab('input-kehadiran')"
                 id="nav-input-kehadiran"
@@ -240,6 +241,7 @@
                 <i class="fa-solid fa-clipboard-user w-6 text-brand-600"></i>
                 Kehadiran & Catatan
               </button>
+
               <button
                 onclick="switchTab('cetak-raport')"
                 id="nav-cetak-raport"
@@ -543,7 +545,7 @@
             </div>
           </section>
 
-          <!-- TAB 4: INPUT DATA WALI KELAS -->
+          <!-- TAB 4: INPUT DATA WALI KELAS DENGAN TABEL DAFTAR -->
           <section
             id="tab-input-walikelas"
             class="hidden bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6"
@@ -553,10 +555,12 @@
                 Manajemen Data Wali Kelas
               </h3>
               <p class="text-sm text-gray-500">
-                Input atau perbarui data penugasan Wali Kelas dan NIP.
+                Input atau perbarui data penugasan Wali Kelas dan NIP per kelas
+                binaan.
               </p>
             </div>
 
+            <!-- Form Tambah / Simpan Wali Kelas -->
             <form
               onsubmit="simpanWaliKelas(event)"
               class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200"
@@ -568,14 +572,15 @@
                 >
                 <select
                   id="walikelas-kelas"
-                  class="w-full px-3 py-2 border rounded-lg text-sm bg-white"
+                  required
+                  class="w-full px-3 py-2 border rounded-lg text-sm bg-white focus:ring-2 focus:ring-brand-500 outline-none"
                 >
-                  <option>Kelas 1</option>
-                  <option>Kelas 2</option>
-                  <option>Kelas 3</option>
-                  <option>Kelas 4</option>
-                  <option selected>Kelas 5</option>
-                  <option>Kelas 6</option>
+                  <option value="1">Kelas 1</option>
+                  <option value="2">Kelas 2</option>
+                  <option value="3">Kelas 3</option>
+                  <option value="4">Kelas 4</option>
+                  <option value="5" selected>Kelas 5</option>
+                  <option value="6">Kelas 6</option>
                 </select>
               </div>
               <div>
@@ -586,9 +591,9 @@
                 <input
                   type="text"
                   id="walikelas-nip"
-                  value="19880512 202101 1 002"
+                  placeholder="Contoh: 19880512 202101 1 001"
                   required
-                  class="w-full px-3 py-2 border rounded-lg text-sm bg-white"
+                  class="w-full px-3 py-2 border rounded-lg text-sm bg-white focus:ring-2 focus:ring-brand-500 outline-none"
                 />
               </div>
               <div class="md:col-span-2">
@@ -599,9 +604,9 @@
                 <input
                   type="text"
                   id="walikelas-nama"
-                  value="Ust. Husen, S.Pd.I"
+                  placeholder="Contoh: Ustadzah. Yuni, S.Pd.I"
                   required
-                  class="w-full px-3 py-2 border rounded-lg text-sm bg-white"
+                  class="w-full px-3 py-2 border rounded-lg text-sm bg-white focus:ring-2 focus:ring-brand-500 outline-none"
                 />
               </div>
               <div class="md:col-span-2 flex justify-end">
@@ -614,6 +619,32 @@
                 </button>
               </div>
             </form>
+
+            <!-- TABEL DAFTAR WALI KELAS -->
+            <div>
+              <h4 class="font-bold text-gray-800 text-sm mb-3">
+                Daftar Wali Kelas Terdaftar
+              </h4>
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-600">
+                  <thead class="text-xs uppercase bg-gray-100 text-gray-700">
+                    <tr>
+                      <th class="px-4 py-3 w-12">No</th>
+                      <th class="px-4 py-3">Kelas Binaan</th>
+                      <th class="px-4 py-3">Nama Wali Kelas & Gelar</th>
+                      <th class="px-4 py-3">NIP / NUPTK</th>
+                      <th class="px-4 py-3 text-center">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    class="divide-y divide-gray-200"
+                    id="table-walikelas-body"
+                  >
+                    <!-- Diisi otomatis oleh JavaScript -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </section>
 
           <!-- TAB 5: TAHFIDZ, TASMI & METODE UMMI (DENGAN FILTER KELAS & NAMA SISWA) -->
@@ -1104,66 +1135,72 @@ Ananda menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik dalam
                   <table
                     class="w-full text-xs border-collapse border border-gray-400 mb-3 bg-white/80"
                   >
-                    <tr class="bg-gray-100">
-                      <th
-                        class="border border-gray-400 px-2 py-1.5 text-left w-1/3"
-                      >
-                        Kategori Evaluasi Al-Qur'an
-                      </th>
-                      <th class="border border-gray-400 px-2 py-1.5 text-left">
-                        Hasil / Pencapaian Murid
-                      </th>
-                      <th
-                        class="border border-gray-400 px-2 py-1.5 text-center w-24"
-                      >
-                        Predikat
-                      </th>
-                    </tr>
-                    <tr>
-                      <td
-                        class="border border-gray-400 px-2 py-1 font-semibold"
-                      >
-                        Ujian Tasmi' Al-Qur'an
-                      </td>
-                      <td class="border border-gray-400 px-2 py-1">
-                        Lulus Tasmi' Juz 30 (Sekali Duduk)
-                      </td>
-                      <td
-                        class="border border-gray-400 px-2 py-1 text-center font-bold text-brand-800"
-                      >
-                        Mumtaz
-                      </td>
-                    </tr>
-                    <tr>
-                      <td
-                        class="border border-gray-400 px-2 py-1 font-semibold"
-                      >
-                        Capaian Mutqin Hafalan
-                      </td>
-                      <td class="border border-gray-400 px-2 py-1">
-                        Juz 29 (Surah Al-Mulk s.d. Surah Al-Mursalat)
-                      </td>
-                      <td
-                        class="border border-gray-400 px-2 py-1 text-center font-bold"
-                      >
-                        Baik Sekali
-                      </td>
-                    </tr>
-                    <tr>
-                      <td
-                        class="border border-gray-400 px-2 py-1 font-semibold"
-                      >
-                        Metode Ummi (Jilid 1 - 6)
-                      </td>
-                      <td class="border border-gray-400 px-2 py-1">
-                        Jilid 5 (Halaman 20 - Siap Munaqosah)
-                      </td>
-                      <td
-                        class="border border-gray-400 px-2 py-1 text-center font-bold"
-                      >
-                        A (Tartil)
-                      </td>
-                    </tr>
+                    <thead>
+                      <tr class="bg-gray-100">
+                        <th
+                          class="border border-gray-400 px-2 py-1.5 text-left w-1/3"
+                        >
+                          Kategori Evaluasi Al-Qur'an
+                        </th>
+                        <th
+                          class="border border-gray-400 px-2 py-1.5 text-left"
+                        >
+                          Hasil / Pencapaian Murid
+                        </th>
+                        <th
+                          class="border border-gray-400 px-2 py-1.5 text-center w-24"
+                        >
+                          Predikat
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td
+                          class="border border-gray-400 px-2 py-1 font-semibold"
+                        >
+                          Ujian Tasmi' Al-Qur'an
+                        </td>
+                        <td class="border border-gray-400 px-2 py-1">
+                          Lulus Tasmi' Juz 30 (Sekali Duduk)
+                        </td>
+                        <td
+                          class="border border-gray-400 px-2 py-1 text-center font-bold text-brand-800"
+                        >
+                          Mumtaz
+                        </td>
+                      </tr>
+                      <tr>
+                        <td
+                          class="border border-gray-400 px-2 py-1 font-semibold"
+                        >
+                          Capaian Mutqin Hafalan
+                        </td>
+                        <td class="border border-gray-400 px-2 py-1">
+                          Juz 29 (Surah Al-Mulk s.d. Surah Al-Mursalat)
+                        </td>
+                        <td
+                          class="border border-gray-400 px-2 py-1 text-center font-bold"
+                        >
+                          Baik Sekali
+                        </td>
+                      </tr>
+                      <tr>
+                        <td
+                          class="border border-gray-400 px-2 py-1 font-semibold"
+                        >
+                          Metode Ummi (Jilid 1 - 6)
+                        </td>
+                        <td class="border border-gray-400 px-2 py-1">
+                          Jilid 5 (Halaman 20 - Siap Munaqosah)
+                        </td>
+                        <td
+                          class="border border-gray-400 px-2 py-1 text-center font-bold"
+                        >
+                          A (Tartil)
+                        </td>
+                      </tr>
+                    </tbody>
                   </table>
                 </div>
 
