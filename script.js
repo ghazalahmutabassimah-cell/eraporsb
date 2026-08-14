@@ -1,6 +1,5 @@
 /* =========================================================
    Logic Application eRapor SD Tahfidz Bintang Al-Qur'an
-   (Mendukung Auto-Login & Filter Kelas/Siswa Semua Tab)
    ========================================================= */
 
 // Database Mata Pelajaran Berdasarkan Tingkat Kelas (1 s.d. 6 SD)
@@ -441,7 +440,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /**
- * Memeriksa status login dari LocalStorage agar tidak logout saat di-refresh
+ * Memeriksa status login dari LocalStorage
  */
 function checkLoginSession() {
   const isLoggedIn = localStorage.getItem("isLoggedIn");
@@ -540,7 +539,7 @@ function updateCetakDropdownSiswa() {
 }
 
 /**
- * Render Biodata Murid & Tabel Nilai khusus untuk Lembar Cetak Raport
+ * Render Biodata Murid, Wali Kelas, & Tabel Nilai untuk Lembar Cetak Raport
  */
 function renderPrintableData() {
   const kelasSelect = document.getElementById("cetak-select-kelas");
@@ -553,7 +552,7 @@ function renderPrintableData() {
   const selectedSiswa =
     listSiswa.find((s) => s.nisn === nisnVal) || listSiswa[0];
 
-  // Update Biodata Murid pada Lembar Raport
+  // 1. Update Biodata Murid
   const printNama = document.getElementById("print-nama-siswa");
   const printNisn = document.getElementById("print-nisn-siswa");
   const printKelas = document.getElementById("print-kelas-siswa");
@@ -564,7 +563,21 @@ function renderPrintableData() {
     printNisn.textContent = `: ${selectedSiswa ? selectedSiswa.nisn : "-"}`;
   if (printKelas) printKelas.textContent = `: Kelas ${kelasVal}`;
 
-  // Update Tabel Mapel pada Lembar Raport
+  // 2. Update Nama Wali Kelas & NIP Sesuai Kelas
+  const printWaliNama = document.getElementById("print-walikelas-nama");
+  const printWaliNip = document.getElementById("print-walikelas-nip");
+  const waliAktif = dataWaliKelas.find((w) => w.kelas === kelasVal);
+
+  if (printWaliNama) {
+    printWaliNama.textContent = waliAktif
+      ? waliAktif.nama
+      : "( .................................... )";
+  }
+  if (printWaliNip) {
+    printWaliNip.textContent = waliAktif ? `NIP. ${waliAktif.nip}` : "NIP. -";
+  }
+
+  // 3. Update Tabel Mapel
   const listMapel = mapelByKelas[kelasVal] || [];
   renderPrintableMapel(listMapel);
 }
@@ -600,7 +613,7 @@ function renderPrintableMapel(listMapel) {
 }
 
 /**
- * Render Tabel Mata Pelajaran Sesuai Tingkat Kelas Yang Dipilih (Tab Input Nilai)
+ * Render Tabel Mata Pelajaran (Tab Input Nilai)
  */
 function renderMapelTable() {
   const tbody = document.getElementById("table-mapel-body");
@@ -781,7 +794,7 @@ function tambahMapelBaru(e) {
 }
 
 /**
- * Render Tabel Manajemen Kelola Mapel
+ * Render Tabel Kelola Mapel
  */
 function renderTabelKelolaMapel() {
   const tbody = document.getElementById("table-kelola-mapel-body");
@@ -816,7 +829,7 @@ function renderTabelKelolaMapel() {
 }
 
 /**
- * Menghapus Mata Pelajaran dari Kelas
+ * Menghapus Mata Pelajaran
  */
 function hapusMapel(kelas, index) {
   if (confirm("Apakah Anda yakin ingin menghapus mata pelajaran ini?")) {
@@ -913,7 +926,6 @@ function renderTabelWaliKelas() {
     return;
   }
 
-  // Urutkan daftar wali kelas berdasarkan nomor kelas
   dataWaliKelas.sort((a, b) => a.kelas - b.kelas);
 
   dataWaliKelas.forEach((w, index) => {
@@ -945,7 +957,6 @@ function simpanWaliKelas(e) {
   const nip = document.getElementById("walikelas-nip").value.trim();
   const nama = document.getElementById("walikelas-nama").value.trim();
 
-  // Cari apakah wali kelas untuk kelas ini sudah terdaftar
   const index = dataWaliKelas.findIndex((w) => w.kelas === kelas);
 
   if (index !== -1) {
@@ -954,7 +965,7 @@ function simpanWaliKelas(e) {
     dataWaliKelas.push({ kelas, nama, nip });
   }
 
-  // Perbarui display header jika kelas yang diubah cocok dengan profil aktif
+  // Update header apabila kelas yang diedit adalah kelas aktif pengguna
   const nameDisplay = document.getElementById("user-display-name");
   const roleDisplay = document.getElementById("user-display-role");
   if (kelas === "5" && nameDisplay && roleDisplay) {
@@ -966,10 +977,10 @@ function simpanWaliKelas(e) {
     `Alhamdulillah! Data Wali Kelas untuk Kelas ${kelas} berhasil disimpan.`,
   );
 
-  // Reset form & render ulang tabel wali kelas
   document.getElementById("walikelas-nip").value = "";
   document.getElementById("walikelas-nama").value = "";
   renderTabelWaliKelas();
+  renderPrintableData(); // Update pratinjau cetak
 }
 
 /**
@@ -992,6 +1003,7 @@ function hapusWaliKelas(kelas) {
   if (confirm(`Apakah Anda yakin ingin menghapus data Wali Kelas ${kelas}?`)) {
     dataWaliKelas = dataWaliKelas.filter((w) => w.kelas !== kelas);
     renderTabelWaliKelas();
+    renderPrintableData(); // Update pratinjau cetak
   }
 }
 
