@@ -197,7 +197,6 @@
                 Input Nilai Mapel
               </button>
 
-              <!-- MENU BARU: MANAJEMEN INPUT MAPEL -->
               <button
                 onclick="switchTab('kelola-mapel')"
                 id="nav-kelola-mapel"
@@ -207,7 +206,6 @@
                 Input / Kelola Mapel
               </button>
 
-              <!-- MENU: INPUT SISWA -->
               <button
                 onclick="switchTab('input-siswa')"
                 id="nav-input-siswa"
@@ -217,7 +215,6 @@
                 Input Data Siswa
               </button>
 
-              <!-- MENU: INPUT WALI KELAS -->
               <button
                 onclick="switchTab('input-walikelas')"
                 id="nav-input-walikelas"
@@ -257,7 +254,7 @@
 
         <!-- Main Content Area -->
         <main class="md:col-span-3">
-          <!-- TAB 1: INPUT NILAI MAPEL (DINAMIS KELAS 1-6) -->
+          <!-- TAB 1: INPUT NILAI MAPEL -->
           <section
             id="tab-input-mapel"
             class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6"
@@ -277,7 +274,6 @@
 
               <!-- Filter Kelas & Nama Siswa -->
               <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-                <!-- Dropdown Pilihan Kelas (1 s.d 6) -->
                 <div>
                   <label
                     class="block text-[11px] font-bold text-gray-500 uppercase mb-1"
@@ -297,7 +293,6 @@
                   </select>
                 </div>
 
-                <!-- Dropdown Pilihan Nama Siswa -->
                 <div>
                   <label
                     class="block text-[11px] font-bold text-gray-500 uppercase mb-1"
@@ -339,7 +334,7 @@
             </div>
           </section>
 
-          <!-- TAB BARU: INPUT / KELOLA MATA PELAJARAN -->
+          <!-- TAB 2: INPUT / KELOLA MATA PELAJARAN -->
           <section
             id="tab-kelola-mapel"
             class="hidden bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6"
@@ -354,7 +349,6 @@
               </p>
             </div>
 
-            <!-- Form Tambah Mapel Baru -->
             <form
               onsubmit="tambahMapelBaru(event)"
               class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200"
@@ -429,7 +423,6 @@
               </div>
             </form>
 
-            <!-- Tabel Daftar Mapel per Kelas -->
             <div>
               <h4 class="font-bold text-gray-800 text-sm mb-3">
                 Daftar Mata Pelajaran Terdaftar
@@ -456,7 +449,7 @@
             </div>
           </section>
 
-          <!-- TAB: INPUT DATA SISWA -->
+          <!-- TAB 3: INPUT DATA SISWA -->
           <section
             id="tab-input-siswa"
             class="hidden bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6"
@@ -470,7 +463,6 @@
               </p>
             </div>
 
-            <!-- Form Tambah Siswa -->
             <form
               onsubmit="tambahSiswa(event)"
               class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200"
@@ -530,7 +522,6 @@
               </div>
             </form>
 
-            <!-- Daftar Tabel Siswa -->
             <div>
               <h4 class="font-bold text-gray-800 text-sm mb-3">
                 Daftar Siswa Terdaftar
@@ -552,7 +543,7 @@
             </div>
           </section>
 
-          <!-- TAB: INPUT DATA WALI KELAS -->
+          <!-- TAB 4: INPUT DATA WALI KELAS -->
           <section
             id="tab-input-walikelas"
             class="hidden bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6"
@@ -625,7 +616,7 @@
             </form>
           </section>
 
-          <!-- TAB 2: TAHFIDZ, TASMI & METODE UMMI -->
+          <!-- TAB 5: TAHFIDZ, TASMI & METODE UMMI -->
           <section
             id="tab-input-tahfidz"
             class="hidden bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6"
@@ -763,7 +754,7 @@
             </div>
           </section>
 
-          <!-- TAB 3: KEHADIRAN & CATATAN WALI KELAS -->
+          <!-- TAB 6: KEHADIRAN & CATATAN WALI KELAS -->
           <section
             id="tab-input-kehadiran"
             class="hidden bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6"
@@ -844,23 +835,62 @@ Ananda Azzam menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik
             </div>
           </section>
 
-          <!-- TAB 4: PRATINJAU & CETAK RAPORT -->
+          <!-- TAB 7: PRATINJAU & CETAK RAPORT (DENGAN DROPDOWN PILIHAN KELAS & SISWA) -->
           <section id="tab-cetak-raport" class="hidden space-y-4">
             <div
-              class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-gray-200"
+              class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-4 rounded-xl shadow-sm border border-gray-200 gap-4"
             >
               <div>
                 <h3 class="font-bold text-gray-800">Pratinjau Lembar Raport</h3>
                 <p class="text-xs text-gray-500">
-                  Siap dicetak ke kertas A4 atau disimpan sebagai PDF.
+                  Pilih siswa untuk melihat & mencetak lembar raport.
                 </p>
               </div>
-              <button
-                onclick="window.print()"
-                class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-4 py-2 rounded-lg shadow flex items-center"
-              >
-                <i class="fa-solid fa-print mr-2"></i> Cetak / Simpan PDF
-              </button>
+
+              <!-- DROPDOWN PILIHAN KELAS DAN SISWA UNTUK CETAK -->
+              <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                <div>
+                  <label
+                    class="block text-[10px] font-bold text-gray-500 uppercase mb-0.5"
+                    >Kelas</label
+                  >
+                  <select
+                    id="cetak-select-kelas"
+                    onchange="updateCetakDropdownSiswa()"
+                    class="px-3 py-1.5 border border-brand-300 rounded-lg text-xs font-bold bg-brand-50 text-brand-800 outline-none focus:ring-2 focus:ring-brand-500"
+                  >
+                    <option value="1">Kelas 1</option>
+                    <option value="2">Kelas 2</option>
+                    <option value="3">Kelas 3</option>
+                    <option value="4">Kelas 4</option>
+                    <option value="5" selected>Kelas 5</option>
+                    <option value="6">Kelas 6</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label
+                    class="block text-[10px] font-bold text-gray-500 uppercase mb-0.5"
+                    >Nama Siswa</label
+                  >
+                  <select
+                    id="cetak-select-siswa"
+                    onchange="renderPrintableData()"
+                    class="px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-semibold bg-gray-50 text-gray-800 outline-none focus:ring-2 focus:ring-brand-500"
+                  >
+                    <!-- Diisi dinamis oleh JS -->
+                  </select>
+                </div>
+
+                <div class="self-end pt-2 sm:pt-0">
+                  <button
+                    onclick="window.print()"
+                    class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-4 py-2 rounded-lg text-xs shadow flex items-center transition"
+                  >
+                    <i class="fa-solid fa-print mr-1.5"></i> Cetak / Simpan PDF
+                  </button>
+                </div>
+              </div>
             </div>
 
             <!-- LEMBAR RAPORT SIAP CETAK SD -->
@@ -879,13 +909,12 @@ Ananda Azzam menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik
                 />
               </div>
 
-              <!-- KONTEN RAPORT UTAMA (RELATIF DI ATAS WATERMARK) -->
+              <!-- KONTEN RAPORT UTAMA -->
               <div class="relative z-10">
                 <!-- KOP SEKOLAH DENGAN LOGO SB -->
                 <div
                   class="border-b-4 border-double border-gray-800 pb-3 mb-6 flex items-center justify-between"
                 >
-                  <!-- LOGO SB DI KOP SURAT RAPORT -->
                   <div class="w-16 h-16 flex items-center justify-center">
                     <img
                       src="./image/sbr.png"
@@ -900,7 +929,7 @@ Ananda Azzam menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik
                     <p class="text-xs text-gray-600 italic">
                       Graha Al-Qadri Jln. Pondok Bambu Batas No 110B RT 01/RW
                       12, Pondok Bambu, Duren Sawit, Jakarta Timur, Jakarta,
-                      Indonesia, Jakarta. www.yapgi.org | email :
+                      Indonesia. www.yapgi.org | email :
                       yayasanpeduligenrasiislam@gmail.com | HP. 0896-1013-8507
                     </p>
                     <p class="text-xs font-semibold text-brand-800">
@@ -916,11 +945,11 @@ Ananda Azzam menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik
                   Laporan Hasil Belajar Murid (Raport)
                 </h2>
 
-                <!-- BIO MURID SD -->
+                <!-- BIO MURID (DINAMIS SINKRON DENGAN SELEKSI DROPDOWN) -->
                 <div class="grid grid-cols-2 gap-x-8 gap-y-1 text-sm mb-6">
                   <div class="flex">
                     <span class="w-32 font-semibold">Nama Murid</span
-                    ><span>: Muhammad Azzam</span>
+                    ><span id="print-nama-siswa">: Muhammad Azzam</span>
                   </div>
                   <div class="flex">
                     <span class="w-32 font-semibold">Tahun Ajaran</span
@@ -928,7 +957,7 @@ Ananda Azzam menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik
                   </div>
                   <div class="flex">
                     <span class="w-32 font-semibold">NIS / NISN</span
-                    ><span>: 25001 / 0158293041</span>
+                    ><span id="print-nisn-siswa">: 0158293041</span>
                   </div>
                   <div class="flex">
                     <span class="w-32 font-semibold">Semester</span
@@ -936,7 +965,7 @@ Ananda Azzam menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik
                   </div>
                   <div class="flex">
                     <span class="w-32 font-semibold">Kelas</span
-                    ><span>: V (Al-Biruni)</span>
+                    ><span id="print-kelas-siswa">: Kelas 5</span>
                   </div>
                   <div class="flex">
                     <span class="w-32 font-semibold">Tanggal Cetak</span
@@ -1086,15 +1115,15 @@ Ananda Azzam menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik
                       Catatan & Pesan Wali Kelas
                     </p>
                     <p class="italic text-gray-700">
-                      "Ananda Azzam menunjukkan keceriaan, keaktifan, dan
-                      kedisiplinan yang sangat baik dalam belajar serta murojaah
-                      hafalan. Pertahankan semangat belajar dan adab terhadap
-                      orang tua serta guru."
+                      "Ananda menunjukkan keceriaan, keaktifan, dan kedisiplinan
+                      yang sangat baik dalam belajar serta murojaah hafalan.
+                      Pertahankan semangat belajar dan adab terhadap orang tua
+                      serta guru."
                     </p>
                   </div>
                 </div>
 
-                <!-- TANDA TANGAN 3 PIHAK SD -->
+                <!-- TANDA TANGAN 3 PIHAK -->
                 <div class="mt-12 pt-4">
                   <p class="text-right text-xs mb-6">
                     Diberikan di: Jakarta, 14 Agustus 2026
@@ -1110,7 +1139,7 @@ Ananda Azzam menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik
                     </div>
 
                     <div class="flex flex-col justify-between h-28">
-                      <p>Wali Kelas V,</p>
+                      <p>Wali Kelas,</p>
                       <div>
                         <p class="font-bold underline">Ust. Husen</p>
                         <p class="text-[10px] text-gray-500">
