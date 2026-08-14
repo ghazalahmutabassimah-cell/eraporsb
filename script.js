@@ -779,7 +779,22 @@ function logout() {
 }
 
 /**
- * Navigasi Antar Tab Menu
+ * Toggle Tampil/Sembunyi Sub-Menu Input
+ */
+function toggleSubMenuInput() {
+  const container = document.getElementById("submenu-input-container");
+  const arrow = document.getElementById("icon-submenu-arrow");
+
+  if (container) {
+    container.classList.toggle("hidden");
+  }
+  if (arrow) {
+    arrow.classList.toggle("rotate-180");
+  }
+}
+
+/**
+ * Navigasi Antar Tab Menu & Sub-Menu
  */
 function switchTab(tabName) {
   const tabs = [
@@ -796,10 +811,18 @@ function switchTab(tabName) {
   tabs.forEach((t) => {
     const tabElement = document.getElementById(`tab-${t}`);
     const navElement = document.getElementById(`nav-${t}`);
+
     if (tabElement) tabElement.classList.add("hidden");
+
     if (navElement) {
-      navElement.className =
-        "w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 transition";
+      // Pembeda styling untuk Sub-Menu vs Menu Utama
+      if (["input-mapel", "input-tahfidz", "input-kehadiran"].includes(t)) {
+        navElement.className =
+          "w-full flex items-center px-3 py-2 text-xs font-medium rounded-lg text-gray-600 hover:bg-gray-50 transition";
+      } else {
+        navElement.className =
+          "w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 transition";
+      }
     }
   });
 
@@ -807,11 +830,27 @@ function switchTab(tabName) {
   const targetNav = document.getElementById(`nav-${tabName}`);
 
   if (targetTab) targetTab.classList.remove("hidden");
+
   if (targetNav) {
-    targetNav.className =
-      "w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-brand-700 bg-brand-50 font-bold shadow-sm transition";
+    if (["input-mapel", "input-tahfidz", "input-kehadiran"].includes(tabName)) {
+      targetNav.className =
+        "w-full flex items-center px-3 py-2 text-xs font-bold rounded-lg text-brand-700 bg-brand-50 shadow-sm transition";
+    } else {
+      targetNav.className =
+        "w-full flex items-center px-3 py-2.5 text-sm font-bold rounded-lg text-brand-700 bg-brand-50 shadow-sm transition";
+    }
   }
 
+  // Jika memilih salah satu Sub-Menu Input, pastikan container sub-menu terbuka
+  if (["input-mapel", "input-tahfidz", "input-kehadiran"].includes(tabName)) {
+    const submenuContainer = document.getElementById("submenu-input-container");
+    const arrow = document.getElementById("icon-submenu-arrow");
+
+    if (submenuContainer) submenuContainer.classList.remove("hidden");
+    if (arrow) arrow.classList.add("rotate-180");
+  }
+
+  // Panggilan fungsi sesuai tab yang diakses
   if (tabName === "setting-rapor") {
     populateFormSetting();
   } else if (tabName === "kelola-mapel") {
