@@ -186,10 +186,20 @@
               Menu Utama
             </p>
             <nav class="space-y-1">
+              <!-- MENU BARU: SETTING RAPOR -->
+              <button
+                onclick="switchTab('setting-rapor')"
+                id="nav-setting-rapor"
+                class="w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 transition"
+              >
+                <i class="fa-solid fa-sliders w-6 text-brand-600"></i>
+                Setting Rapor
+              </button>
+
               <button
                 onclick="switchTab('kelola-mapel')"
                 id="nav-kelola-mapel"
-                class="w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50"
+                class="w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 transition"
               >
                 <i class="fa-solid fa-book-bookmark w-6 text-brand-600"></i>
                 Kelola Mapel
@@ -198,7 +208,7 @@
               <button
                 onclick="switchTab('input-siswa')"
                 id="nav-input-siswa"
-                class="w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50"
+                class="w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 transition"
               >
                 <i class="fa-solid fa-user-graduate w-6 text-brand-600"></i>
                 Data Siswa
@@ -207,7 +217,7 @@
               <button
                 onclick="switchTab('input-walikelas')"
                 id="nav-input-walikelas"
-                class="w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50"
+                class="w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 transition"
               >
                 <i class="fa-solid fa-chalkboard-user w-6 text-brand-600"></i>
                 Wali Kelas
@@ -216,7 +226,7 @@
               <button
                 onclick="switchTab('input-mapel')"
                 id="nav-input-mapel"
-                class="w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-brand-700 bg-brand-50 shadow-sm"
+                class="w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-brand-700 bg-brand-50 font-bold shadow-sm transition"
               >
                 <i class="fa-solid fa-pen-to-square w-6 text-brand-600"></i>
                 Input Nilai Mapel
@@ -225,7 +235,7 @@
               <button
                 onclick="switchTab('input-tahfidz')"
                 id="nav-input-tahfidz"
-                class="w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50"
+                class="w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 transition"
               >
                 <i class="fa-solid fa-book-open-reader w-6 text-brand-600"></i>
                 Tahfidz, Tasmi' & Ummi
@@ -234,7 +244,7 @@
               <button
                 onclick="switchTab('input-kehadiran')"
                 id="nav-input-kehadiran"
-                class="w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50"
+                class="w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 transition"
               >
                 <i class="fa-solid fa-clipboard-user w-6 text-brand-600"></i>
                 Kehadiran & Catatan
@@ -243,7 +253,7 @@
               <button
                 onclick="switchTab('cetak-raport')"
                 id="nav-cetak-raport"
-                class="w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50"
+                class="w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 transition"
               >
                 <i class="fa-solid fa-print w-6 text-brand-600"></i> Cetak
                 Raport
@@ -254,6 +264,112 @@
 
         <!-- Main Content Area -->
         <main class="md:col-span-3">
+          <!-- TAB SETTING RAPOR (BARU) -->
+          <section
+            id="tab-setting-rapor"
+            class="hidden bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6"
+          >
+            <div class="border-b pb-4">
+              <h3 class="text-xl font-bold text-gray-800">
+                Pengaturan Umum Rapor
+              </h3>
+              <p class="text-sm text-gray-500">
+                Atur Tahun Ajaran, Semester, Tanggal Cetak Rapor, dan Data Mudir
+                Sekolah.
+              </p>
+            </div>
+
+            <form
+              onsubmit="simpanSettingRapor(event)"
+              class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-5 rounded-xl border border-gray-200"
+            >
+              <div>
+                <label
+                  class="block text-xs font-bold text-gray-700 mb-1 uppercase"
+                >
+                  Tahun Ajaran
+                </label>
+                <input
+                  type="text"
+                  id="setting-tahun-ajaran"
+                  required
+                  placeholder="Contoh: 2026/2027"
+                  class="w-full px-3 py-2 border rounded-lg text-sm bg-white focus:ring-2 focus:ring-brand-500 outline-none"
+                />
+              </div>
+
+              <div>
+                <label
+                  class="block text-xs font-bold text-gray-700 mb-1 uppercase"
+                >
+                  Semester Aktif
+                </label>
+                <select
+                  id="setting-semester"
+                  required
+                  class="w-full px-3 py-2 border rounded-lg text-sm bg-white focus:ring-2 focus:ring-brand-500 outline-none"
+                >
+                  <option value="Ganjil (1)">Ganjil (1)</option>
+                  <option value="Genap (2)">Genap (2)</option>
+                </select>
+              </div>
+
+              <div>
+                <label
+                  class="block text-xs font-bold text-gray-700 mb-1 uppercase"
+                >
+                  Tanggal Cetak Rapor
+                </label>
+                <input
+                  type="text"
+                  id="setting-tanggal-cetak"
+                  required
+                  placeholder="Contoh: 14 Agustus 2026"
+                  class="w-full px-3 py-2 border rounded-lg text-sm bg-white focus:ring-2 focus:ring-brand-500 outline-none"
+                />
+              </div>
+
+              <div>
+                <label
+                  class="block text-xs font-bold text-gray-700 mb-1 uppercase"
+                >
+                  Nama Mudir Sekolah
+                </label>
+                <input
+                  type="text"
+                  id="setting-nama-mudir"
+                  required
+                  placeholder="Contoh: Ust. Khoiruddin, S.Si"
+                  class="w-full px-3 py-2 border rounded-lg text-sm bg-white focus:ring-2 focus:ring-brand-500 outline-none"
+                />
+              </div>
+
+              <div class="md:col-span-2">
+                <label
+                  class="block text-xs font-bold text-gray-700 mb-1 uppercase"
+                >
+                  NIY / NIP Mudir Sekolah
+                </label>
+                <input
+                  type="text"
+                  id="setting-niy-mudir"
+                  required
+                  placeholder="Contoh: 201501 001"
+                  class="w-full px-3 py-2 border rounded-lg text-sm bg-white focus:ring-2 focus:ring-brand-500 outline-none"
+                />
+              </div>
+
+              <div class="md:col-span-2 flex justify-end">
+                <button
+                  type="submit"
+                  class="bg-brand-600 hover:bg-brand-700 text-white font-medium px-5 py-2.5 rounded-lg shadow transition"
+                >
+                  <i class="fa-solid fa-floppy-disk mr-2"></i> Simpan Pengaturan
+                </button>
+              </div>
+            </form>
+          </section>
+
           <!-- TAB 1: INPUT NILAI MAPEL -->
           <section
             id="tab-input-mapel"
@@ -543,7 +659,7 @@
             </div>
           </section>
 
-          <!-- TAB 4: INPUT DATA WALI KELAS DENGAN TABEL DAFTAR -->
+          <!-- TAB 4: INPUT DATA WALI KELAS -->
           <section
             id="tab-input-walikelas"
             class="hidden bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6"
@@ -645,7 +761,7 @@
             </div>
           </section>
 
-          <!-- TAB 5: TAHFIDZ, TASMI & METODE UMMI (DENGAN FILTER KELAS & NAMA SISWA) -->
+          <!-- TAB 5: TAHFIDZ, TASMI & METODE UMMI -->
           <section
             id="tab-input-tahfidz"
             class="hidden bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6"
@@ -822,7 +938,7 @@
             </div>
           </section>
 
-          <!-- TAB 6: KEHADIRAN & CATATAN WALI KELAS (DENGAN FILTER KELAS & NAMA SISWA) -->
+          <!-- TAB 6: KEHADIRAN & CATATAN WALI KELAS -->
           <section
             id="tab-input-kehadiran"
             class="hidden bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6"
@@ -1052,7 +1168,7 @@ Ananda menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik dalam
                   Laporan Hasil Belajar Murid (Raport)
                 </h2>
 
-                <!-- BIO MURID -->
+                <!-- BIO MURID (DINAMIS SINKRON DENGAN SETTING RAPOR) -->
                 <div class="grid grid-cols-2 gap-x-8 gap-y-1 text-sm mb-6">
                   <div class="flex">
                     <span class="w-32 font-semibold">Nama Murid</span
@@ -1060,7 +1176,7 @@ Ananda menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik dalam
                   </div>
                   <div class="flex">
                     <span class="w-32 font-semibold">Tahun Ajaran</span
-                    ><span>: 2026/2027</span>
+                    ><span id="print-tahun-ajaran">: 2026/2027</span>
                   </div>
                   <div class="flex">
                     <span class="w-32 font-semibold">NIS / NISN</span
@@ -1068,7 +1184,7 @@ Ananda menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik dalam
                   </div>
                   <div class="flex">
                     <span class="w-32 font-semibold">Semester</span
-                    ><span>: Ganjil (1)</span>
+                    ><span id="print-semester">: Ganjil (1)</span>
                   </div>
                   <div class="flex">
                     <span class="w-32 font-semibold">Kelas</span
@@ -1076,7 +1192,7 @@ Ananda menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik dalam
                   </div>
                   <div class="flex">
                     <span class="w-32 font-semibold">Tanggal Cetak</span
-                    ><span>: 14 Agustus 2026</span>
+                    ><span id="print-tanggal-cetak">: 14 Agustus 2026</span>
                   </div>
                 </div>
 
@@ -1238,7 +1354,7 @@ Ananda menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik dalam
 
                 <!-- TANDA TANGAN 3 PIHAK -->
                 <div class="mt-12 pt-4">
-                  <p class="text-right text-xs mb-6">
+                  <p id="print-titi-mangsa" class="text-right text-xs mb-6">
                     Diberikan di: Jakarta, 14 Agustus 2026
                   </p>
                   <div class="grid grid-cols-3 gap-2 text-center text-xs">
@@ -1251,12 +1367,9 @@ Ananda menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik dalam
                       </div>
                     </div>
 
-                    <!-- Cari bagian TANDA TANGAN 3 PIHAK di bawah tab Cetak Raport, lalu perbarui elemen Wali Kelas: -->
-
                     <div class="flex flex-col justify-between h-28">
                       <p>Wali Kelas,</p>
                       <div>
-                        <!-- Tambahkan ID agar nilainya dinamis -->
                         <p
                           id="print-walikelas-nama"
                           class="font-bold underline"
@@ -1279,8 +1392,15 @@ Ananda menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik dalam
                         >
                       </p>
                       <div>
-                        <p class="font-bold underline">Ust. Khoiruddin, S.Si</p>
-                        <p class="text-[10px] text-gray-500">NIY. 201501 001</p>
+                        <p id="print-mudir-nama" class="font-bold underline">
+                          Ust. Khoiruddin, S.Si
+                        </p>
+                        <p
+                          id="print-mudir-niy"
+                          class="text-[10px] text-gray-500"
+                        >
+                          NIY. 201501 001
+                        </p>
                       </div>
                     </div>
                   </div>

@@ -2,6 +2,15 @@
    Logic Application eRapor SD Tahfidz Bintang Al-Qur'an
    ========================================================= */
 
+// Database Pengaturan Rapor
+let configRapor = {
+  tahunAjaran: "2026/2027",
+  semester: "Ganjil (1)",
+  tanggalCetak: "14 Agustus 2026",
+  namaMudir: "Ust. Khoiruddin, S.Si",
+  niyMudir: "201501 001",
+};
+
 // Database Mata Pelajaran Berdasarkan Tingkat Kelas (1 s.d. 6 SD)
 const mapelByKelas = {
   1: [
@@ -437,7 +446,49 @@ let currentRole = "walikelas";
 // Inisialisasi saat halaman selesai dimuat
 document.addEventListener("DOMContentLoaded", () => {
   checkLoginSession();
+  populateFormSetting();
 });
+
+/**
+ * Memuat data setting ke dalam form setting-rapor
+ */
+function populateFormSetting() {
+  const thInput = document.getElementById("setting-tahun-ajaran");
+  const smSelect = document.getElementById("setting-semester");
+  const tgInput = document.getElementById("setting-tanggal-cetak");
+  const mdInput = document.getElementById("setting-nama-mudir");
+  const nyInput = document.getElementById("setting-niy-mudir");
+
+  if (thInput) thInput.value = configRapor.tahunAjaran;
+  if (smSelect) smSelect.value = configRapor.semester;
+  if (tgInput) tgInput.value = configRapor.tanggalCetak;
+  if (mdInput) mdInput.value = configRapor.namaMudir;
+  if (nyInput) nyInput.value = configRapor.niyMudir;
+}
+
+/**
+ * Menyimpan Form Setting Rapor
+ */
+function simpanSettingRapor(e) {
+  e.preventDefault();
+
+  configRapor.tahunAjaran = document
+    .getElementById("setting-tahun-ajaran")
+    .value.trim();
+  configRapor.semester = document.getElementById("setting-semester").value;
+  configRapor.tanggalCetak = document
+    .getElementById("setting-tanggal-cetak")
+    .value.trim();
+  configRapor.namaMudir = document
+    .getElementById("setting-nama-mudir")
+    .value.trim();
+  configRapor.niyMudir = document
+    .getElementById("setting-niy-mudir")
+    .value.trim();
+
+  alert("Alhamdulillah! Pengaturan umum Rapor berhasil disimpan.");
+  renderPrintableData(); // Update tampilan cetak
+}
 
 /**
  * Memeriksa status login dari LocalStorage
@@ -539,7 +590,7 @@ function updateCetakDropdownSiswa() {
 }
 
 /**
- * Render Biodata Murid, Wali Kelas, & Tabel Nilai untuk Lembar Cetak Raport
+ * Render Biodata Murid, Wali Kelas, Mudir & Tabel Nilai untuk Lembar Cetak Raport
  */
 function renderPrintableData() {
   const kelasSelect = document.getElementById("cetak-select-kelas");
@@ -552,16 +603,25 @@ function renderPrintableData() {
   const selectedSiswa =
     listSiswa.find((s) => s.nisn === nisnVal) || listSiswa[0];
 
-  // 1. Update Biodata Murid
+  // 1. Update Biodata Murid & Pengaturan Umumi Rapor
   const printNama = document.getElementById("print-nama-siswa");
   const printNisn = document.getElementById("print-nisn-siswa");
   const printKelas = document.getElementById("print-kelas-siswa");
+  const printThn = document.getElementById("print-tahun-ajaran");
+  const printSmt = document.getElementById("print-semester");
+  const printTgl = document.getElementById("print-tanggal-cetak");
+  const printTiti = document.getElementById("print-titi-mangsa");
 
   if (printNama)
     printNama.textContent = `: ${selectedSiswa ? selectedSiswa.name : "-"}`;
   if (printNisn)
     printNisn.textContent = `: ${selectedSiswa ? selectedSiswa.nisn : "-"}`;
   if (printKelas) printKelas.textContent = `: Kelas ${kelasVal}`;
+  if (printThn) printThn.textContent = `: ${configRapor.tahunAjaran}`;
+  if (printSmt) printSmt.textContent = `: ${configRapor.semester}`;
+  if (printTgl) printTgl.textContent = `: ${configRapor.tanggalCetak}`;
+  if (printTiti)
+    printTiti.textContent = `Diberikan di: Jakarta, ${configRapor.tanggalCetak}`;
 
   // 2. Update Nama Wali Kelas & NIP Sesuai Kelas
   const printWaliNama = document.getElementById("print-walikelas-nama");
@@ -577,7 +637,14 @@ function renderPrintableData() {
     printWaliNip.textContent = waliAktif ? `NIP. ${waliAktif.nip}` : "NIP. -";
   }
 
-  // 3. Update Tabel Mapel
+  // 3. Update Nama Mudir & NIY
+  const printMudirNama = document.getElementById("print-mudir-nama");
+  const printMudirNiy = document.getElementById("print-mudir-niy");
+
+  if (printMudirNama) printMudirNama.textContent = configRapor.namaMudir;
+  if (printMudirNiy) printMudirNiy.textContent = `NIY. ${configRapor.niyMudir}`;
+
+  // 4. Update Tabel Mapel
   const listMapel = mapelByKelas[kelasVal] || [];
   renderPrintableMapel(listMapel);
 }
@@ -716,6 +783,7 @@ function logout() {
  */
 function switchTab(tabName) {
   const tabs = [
+    "setting-rapor",
     "input-mapel",
     "kelola-mapel",
     "input-siswa",
@@ -744,7 +812,9 @@ function switchTab(tabName) {
       "w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-brand-700 bg-brand-50 font-bold shadow-sm transition";
   }
 
-  if (tabName === "kelola-mapel") {
+  if (tabName === "setting-rapor") {
+    populateFormSetting();
+  } else if (tabName === "kelola-mapel") {
     renderTabelKelolaMapel();
   } else if (tabName === "input-siswa") {
     renderTabelSiswa();
@@ -965,7 +1035,6 @@ function simpanWaliKelas(e) {
     dataWaliKelas.push({ kelas, nama, nip });
   }
 
-  // Update header apabila kelas yang diedit adalah kelas aktif pengguna
   const nameDisplay = document.getElementById("user-display-name");
   const roleDisplay = document.getElementById("user-display-role");
   if (kelas === "5" && nameDisplay && roleDisplay) {
@@ -980,7 +1049,7 @@ function simpanWaliKelas(e) {
   document.getElementById("walikelas-nip").value = "";
   document.getElementById("walikelas-nama").value = "";
   renderTabelWaliKelas();
-  renderPrintableData(); // Update pratinjau cetak
+  renderPrintableData();
 }
 
 /**
@@ -1003,7 +1072,7 @@ function hapusWaliKelas(kelas) {
   if (confirm(`Apakah Anda yakin ingin menghapus data Wali Kelas ${kelas}?`)) {
     dataWaliKelas = dataWaliKelas.filter((w) => w.kelas !== kelas);
     renderTabelWaliKelas();
-    renderPrintableData(); // Update pratinjau cetak
+    renderPrintableData();
   }
 }
 
