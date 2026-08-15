@@ -534,9 +534,6 @@ function checkLoginSession() {
   }
 }
 
-/**
- * Terapkan Hak Akses & Pembatasan Tampilan Per Role
- */
 function applyRolePermissions() {
   const adminMenu = document.getElementById("admin-only-menu");
   const nameDisplay = document.getElementById("user-display-name");
@@ -560,9 +557,6 @@ function applyRolePermissions() {
   }
 }
 
-/**
- * Render Data Dashboard Sesuai Role
- */
 function renderDashboard() {
   const dashTitle = document.getElementById("dash-title");
   const dashSub = document.getElementById("dash-subtitle");
@@ -578,7 +572,6 @@ function renderDashboard() {
     if (adminContent) adminContent.classList.remove("hidden");
     if (waliContent) waliContent.classList.add("hidden");
 
-    // Total Siswa
     let totalSiswa = 0;
     Object.keys(dataSiswaByKelas).forEach((k) => {
       totalSiswa += dataSiswaByKelas[k].length;
@@ -589,7 +582,6 @@ function renderDashboard() {
     if (elTotalSiswa) elTotalSiswa.textContent = totalSiswa;
     if (elTotalWali) elTotalWali.textContent = dataWaliKelas.length;
 
-    // Progress Nilai per Kelas
     const progressContainer = document.getElementById(
       "dash-progress-kelas-container",
     );
@@ -615,7 +607,6 @@ function renderDashboard() {
       }
     }
   } else {
-    // Wali Kelas Dashboard
     const kelasWali = loggedInWaliKelas ? loggedInWaliKelas.kelas : "5";
     if (dashTitle) dashTitle.textContent = `Dashboard Wali Kelas ${kelasWali}`;
     if (dashSub)
@@ -633,7 +624,6 @@ function renderDashboard() {
     if (elWaliSiswa) elWaliSiswa.textContent = listSiswa.length;
     if (elWaliMapel) elWaliMapel.textContent = listMapel.length;
 
-    // Ringkasan Status Input Kelas
     const statusContainer = document.getElementById(
       "dash-wali-status-container",
     );
@@ -882,6 +872,106 @@ function switchTab(tabName) {
   else if (tabName === "input-tahfidz") updateTahfidzDropdownSiswa();
   else if (tabName === "input-kehadiran") updateKehadiranDropdownSiswa();
   else if (tabName === "cetak-raport") updateCetakDropdownSiswa();
+}
+
+/* =========================================================
+   FUNGSI MANAJEMEN DATA SISWA (BARU & PERBAIKAN)
+   ========================================================= */
+
+/**
+ * Render Tabel Data Siswa Berdasarkan Kelas yang Dipilih
+ */
+function renderTabelSiswa() {
+  const tbody = document.getElementById("table-siswa-body");
+  const selectKelas = document.getElementById("tambah-siswa-kelas");
+  if (!tbody || !selectKelas) return;
+
+  const kelasVal = selectKelas.value;
+  const listSiswa = dataSiswaByKelas[kelasVal] || [];
+
+  tbody.innerHTML = "";
+  if (listSiswa.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="3" class="px-4 py-3 text-center text-gray-400">Belum ada data siswa di kelas ini.</td></tr>`;
+    return;
+  }
+
+  listSiswa.forEach((s) => {
+    tbody.innerHTML += `
+      <tr class="hover:bg-gray-50 transition">
+        <td class="px-4 py-3 font-mono text-xs font-semibold text-gray-700">${s.nisn}</td>
+        <td class="px-4 py-3 font-bold text-gray-800">${s.name}</td>
+        <td class="px-4 py-3 text-center">
+          <button type="button" onclick="hapusSiswa('${kelasVal}', '${s.nisn}')" class="text-red-600 hover:text-red-800 text-xs font-semibold px-2 py-1 rounded hover:bg-red-50 transition">
+            <i class="fa-solid fa-trash mr-1"></i> Hapus
+          </button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+/**
+ * Memproses Form Tambah Siswa Baru
+ */
+function tambahSiswa(e) {
+  e.preventDefault();
+  const kelasSelect = document.getElementById("tambah-siswa-kelas");
+  const nisnInput = document.getElementById("tambah-siswa-nisn");
+  const namaInput = document.getElementById("tambah-siswa-nama");
+
+  if (!kelasSelect || !nisnInput || !namaInput) return;
+
+  const kelas = kelasSelect.value;
+  const nisn = nisnInput.value.trim();
+  const name = namaInput.value.trim();
+
+  if (!dataSiswaByKelas[kelas]) {
+    dataSiswaByKelas[kelas] = [];
+  }
+
+  // Cek jika NISN sudah ada
+  const exists = dataSiswaByKelas[kelas].some((s) => s.nisn === nisn);
+  if (exists) {
+    alert(`NISN ${nisn} sudah terdaftar di Kelas ${kelas}!`);
+    return;
+  }
+
+  dataSiswaByKelas[kelas].push({ nisn, name });
+
+  alert(
+    `Alhamdulillah! Siswa (${name}) berhasil ditambahkan ke Kelas ${kelas}.`,
+  );
+
+  // Reset Input Form
+  nisnInput.value = "";
+  namaInput.value = "";
+
+  // Update Tampilan Seluruh Komponen Terkait
+  renderTabelSiswa();
+  updateDropdownSiswa();
+  updateTahfidzDropdownSiswa();
+  updateKehadiranDropdownSiswa();
+  updateCetakDropdownSiswa();
+  renderDashboard();
+}
+
+/**
+ * Menghapus Data Siswa dari Kelas
+ */
+function hapusSiswa(kelas, nisn) {
+  if (confirm(`Apakah Anda yakin ingin menghapus siswa dengan NISN ${nisn}?`)) {
+    if (dataSiswaByKelas[kelas]) {
+      dataSiswaByKelas[kelas] = dataSiswaByKelas[kelas].filter(
+        (s) => s.nisn !== nisn,
+      );
+      renderTabelSiswa();
+      updateDropdownSiswa();
+      updateTahfidzDropdownSiswa();
+      updateKehadiranDropdownSiswa();
+      updateCetakDropdownSiswa();
+      renderDashboard();
+    }
+  }
 }
 
 function updateDropdownSiswa() {
