@@ -42,7 +42,6 @@
         class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-100"
       >
         <div class="text-center mb-8">
-          <!-- LOGO SB DI HALAMAN LOGIN -->
           <div
             class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center mx-auto mb-3 p-2 shadow-md border border-gray-100"
           >
@@ -133,7 +132,6 @@
           class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center"
         >
           <div class="flex items-center space-x-3">
-            <!-- LOGO SB DI NAVBAR DASHBOARD -->
             <div
               class="w-10 h-10 bg-white rounded-lg p-1 flex items-center justify-center"
             >
@@ -186,42 +184,44 @@
               Menu Utama
             </p>
             <nav class="space-y-1">
-              <!-- MENU SETTING RAPOR -->
-              <button
-                onclick="switchTab('setting-rapor')"
-                id="nav-setting-rapor"
-                class="w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 transition"
-              >
-                <i class="fa-solid fa-sliders w-6 text-brand-600"></i>
-                Setting Rapor
-              </button>
+              <!-- MENU KHUSUS ADMIN -->
+              <div id="admin-only-menu" class="space-y-1">
+                <button
+                  onclick="switchTab('setting-rapor')"
+                  id="nav-setting-rapor"
+                  class="w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 transition"
+                >
+                  <i class="fa-solid fa-sliders w-6 text-brand-600"></i>
+                  Setting Rapor
+                </button>
 
-              <button
-                onclick="switchTab('kelola-mapel')"
-                id="nav-kelola-mapel"
-                class="w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 transition"
-              >
-                <i class="fa-solid fa-book-bookmark w-6 text-brand-600"></i>
-                Kelola Mapel
-              </button>
+                <button
+                  onclick="switchTab('kelola-mapel')"
+                  id="nav-kelola-mapel"
+                  class="w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 transition"
+                >
+                  <i class="fa-solid fa-book-bookmark w-6 text-brand-600"></i>
+                  Kelola Mapel
+                </button>
 
-              <button
-                onclick="switchTab('input-siswa')"
-                id="nav-input-siswa"
-                class="w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 transition"
-              >
-                <i class="fa-solid fa-user-graduate w-6 text-brand-600"></i>
-                Data Siswa
-              </button>
+                <button
+                  onclick="switchTab('input-siswa')"
+                  id="nav-input-siswa"
+                  class="w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 transition"
+                >
+                  <i class="fa-solid fa-user-graduate w-6 text-brand-600"></i>
+                  Data Siswa
+                </button>
 
-              <button
-                onclick="switchTab('input-walikelas')"
-                id="nav-input-walikelas"
-                class="w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 transition"
-              >
-                <i class="fa-solid fa-chalkboard-user w-6 text-brand-600"></i>
-                Wali Kelas
-              </button>
+                <button
+                  onclick="switchTab('input-walikelas')"
+                  id="nav-input-walikelas"
+                  class="w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 transition"
+                >
+                  <i class="fa-solid fa-chalkboard-user w-6 text-brand-600"></i>
+                  Wali Kelas
+                </button>
+              </div>
 
               <!-- ================= MENU INPUT & SUB-MENU ================= -->
               <div class="space-y-1 pt-1">
@@ -237,13 +237,12 @@
                   </div>
                   <i
                     id="icon-submenu-arrow"
-                    class="fa-solid fa-chevron-down text-xs transition-transform duration-200"
+                    class="fa-solid fa-chevron-down text-xs transition-transform duration-200 rotate-180"
                   ></i>
                 </button>
 
                 <!-- SUB MENU WRAPPER -->
                 <div id="submenu-input-container" class="pl-4 space-y-1">
-                  <!-- SUB MENU 1: NILAI MAPEL -->
                   <button
                     onclick="switchTab('input-mapel')"
                     id="nav-input-mapel"
@@ -255,7 +254,6 @@
                     Nilai Mapel
                   </button>
 
-                  <!-- SUB MENU 2: TAHFIDZ, TASMI & UMMI -->
                   <button
                     onclick="switchTab('input-tahfidz')"
                     id="nav-input-tahfidz"
@@ -267,7 +265,6 @@
                     Tahfidz, Tasmi' & Ummi
                   </button>
 
-                  <!-- SUB MENU 3: KEHADIRAN & CATATAN -->
                   <button
                     onclick="switchTab('input-kehadiran')"
                     id="nav-input-kehadiran"
@@ -420,7 +417,6 @@
                 </p>
               </div>
 
-              <!-- Filter Kelas & Nama Siswa -->
               <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
                 <div>
                   <label
@@ -436,7 +432,7 @@
                     <option value="2">Kelas 2</option>
                     <option value="3">Kelas 3</option>
                     <option value="4">Kelas 4</option>
-                    <option value="5" selected>Kelas 5</option>
+                    <option value="5">Kelas 5</option>
                     <option value="6">Kelas 6</option>
                   </select>
                 </div>
@@ -449,14 +445,11 @@
                   <select
                     id="select-siswa"
                     class="w-full px-3 py-2 border rounded-lg text-sm bg-gray-50 border-gray-300 font-medium focus:ring-2 focus:ring-brand-500 outline-none"
-                  >
-                    <!-- Otomatis diisi oleh script.js -->
-                  </select>
+                  ></select>
                 </div>
               </div>
             </div>
 
-            <!-- Tabel Nilai Mapel Dinamis -->
             <div class="overflow-x-auto">
               <table class="w-full text-sm text-left text-gray-600">
                 <thead class="text-xs uppercase bg-gray-100 text-gray-700">
@@ -467,9 +460,10 @@
                     <th class="px-4 py-3">Capaian Kompetensi / Deskripsi</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200" id="table-mapel-body">
-                  <!-- Generated via script.js -->
-                </tbody>
+                <tbody
+                  class="divide-y divide-gray-200"
+                  id="table-mapel-body"
+                ></tbody>
               </table>
             </div>
             <div class="flex justify-end">
@@ -482,7 +476,7 @@
             </div>
           </section>
 
-          <!-- TAB 2: INPUT / KELOLA MATA PELAJARAN -->
+          <!-- TAB 2: KELOLA MATA PELAJARAN -->
           <section
             id="tab-kelola-mapel"
             class="hidden bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6"
@@ -589,9 +583,7 @@
                   <tbody
                     class="divide-y divide-gray-200"
                     id="table-kelola-mapel-body"
-                  >
-                    <!-- Diisi oleh script.js -->
-                  </tbody>
+                  ></tbody>
                 </table>
               </div>
             </div>
@@ -683,30 +675,30 @@
                       <th class="px-4 py-3 text-center">Aksi</th>
                     </tr>
                   </thead>
-                  <tbody class="divide-y divide-gray-200" id="table-siswa-body">
-                    <!-- Diisi otomatis oleh script.js -->
-                  </tbody>
+                  <tbody
+                    class="divide-y divide-gray-200"
+                    id="table-siswa-body"
+                  ></tbody>
                 </table>
               </div>
             </div>
           </section>
 
-          <!-- TAB 4: INPUT DATA WALI KELAS -->
+          <!-- TAB 4: INPUT DATA WALI KELAS + USERNAME & PASSWORD -->
           <section
             id="tab-input-walikelas"
             class="hidden bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6"
           >
             <div class="border-b pb-4">
               <h3 class="text-xl font-bold text-gray-800">
-                Manajemen Data Wali Kelas
+                Manajemen Data Wali Kelas & Akun Login
               </h3>
               <p class="text-sm text-gray-500">
-                Input atau perbarui data penugasan Wali Kelas dan NIP per kelas
-                binaan.
+                Input data Wali Kelas beserta Kredensial Username & Password per
+                kelas.
               </p>
             </div>
 
-            <!-- Form Tambah / Simpan Wali Kelas -->
             <form
               onsubmit="simpanWaliKelas(event)"
               class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200"
@@ -755,39 +747,69 @@
                   class="w-full px-3 py-2 border rounded-lg text-sm bg-white focus:ring-2 focus:ring-brand-500 outline-none"
                 />
               </div>
+
+              <!-- BIDANG INPUT AKUN LOGIN WALI KELAS -->
+              <div>
+                <label
+                  class="block text-xs font-bold text-brand-700 mb-1 uppercase"
+                >
+                  <i class="fa-solid fa-user mr-1"></i> Username Login
+                </label>
+                <input
+                  type="text"
+                  id="walikelas-username"
+                  placeholder="Contoh: wali5"
+                  required
+                  class="w-full px-3 py-2 border border-brand-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-brand-500 outline-none"
+                />
+              </div>
+              <div>
+                <label
+                  class="block text-xs font-bold text-brand-700 mb-1 uppercase"
+                >
+                  <i class="fa-solid fa-key mr-1"></i> Kata Sandi (Password)
+                </label>
+                <input
+                  type="text"
+                  id="walikelas-password"
+                  placeholder="Contoh: pass5123"
+                  required
+                  class="w-full px-3 py-2 border border-brand-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-brand-500 outline-none"
+                />
+              </div>
+
               <div class="md:col-span-2 flex justify-end">
                 <button
                   type="submit"
                   class="bg-brand-600 hover:bg-brand-700 text-white font-medium px-5 py-2.5 rounded-lg shadow transition"
                 >
-                  <i class="fa-solid fa-floppy-disk mr-2"></i> Simpan Data Wali
-                  Kelas
+                  <i class="fa-solid fa-floppy-disk mr-2"></i> Simpan Data &
+                  Akun
                 </button>
               </div>
             </form>
 
-            <!-- TABEL DAFTAR WALI KELAS -->
             <div>
               <h4 class="font-bold text-gray-800 text-sm mb-3">
-                Daftar Wali Kelas Terdaftar
+                Daftar Wali Kelas & Akses Akun
               </h4>
               <div class="overflow-x-auto">
                 <table class="w-full text-sm text-left text-gray-600">
                   <thead class="text-xs uppercase bg-gray-100 text-gray-700">
                     <tr>
                       <th class="px-4 py-3 w-12">No</th>
-                      <th class="px-4 py-3">Kelas Binaan</th>
-                      <th class="px-4 py-3">Nama Wali Kelas & Gelar</th>
-                      <th class="px-4 py-3">NIP / NUPTK</th>
+                      <th class="px-4 py-3">Kelas</th>
+                      <th class="px-4 py-3">Nama Wali Kelas</th>
+                      <th class="px-4 py-3">NIP</th>
+                      <th class="px-4 py-3">Username</th>
+                      <th class="px-4 py-3">Password</th>
                       <th class="px-4 py-3 text-center">Aksi</th>
                     </tr>
                   </thead>
                   <tbody
                     class="divide-y divide-gray-200"
                     id="table-walikelas-body"
-                  >
-                    <!-- Diisi otomatis oleh JavaScript -->
-                  </tbody>
+                  ></tbody>
                 </table>
               </div>
             </div>
@@ -811,7 +833,6 @@
                 </p>
               </div>
 
-              <!-- FILTER KELAS & NAMA SISWA TAHFIDZ -->
               <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
                 <div>
                   <label
@@ -827,7 +848,7 @@
                     <option value="2">Kelas 2</option>
                     <option value="3">Kelas 3</option>
                     <option value="4">Kelas 4</option>
-                    <option value="5" selected>Kelas 5</option>
+                    <option value="5">Kelas 5</option>
                     <option value="6">Kelas 6</option>
                   </select>
                 </div>
@@ -840,9 +861,7 @@
                   <select
                     id="tahfidz-select-siswa"
                     class="w-full px-3 py-2 border rounded-lg text-sm bg-gray-50 border-gray-300 font-medium focus:ring-2 focus:ring-brand-500 outline-none"
-                  >
-                    <!-- Otomatis diisi oleh script.js -->
-                  </select>
+                  ></select>
                 </div>
               </div>
             </div>
@@ -988,7 +1007,6 @@
                 </p>
               </div>
 
-              <!-- FILTER KELAS & NAMA SISWA KEHADIRAN -->
               <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
                 <div>
                   <label
@@ -1004,7 +1022,7 @@
                     <option value="2">Kelas 2</option>
                     <option value="3">Kelas 3</option>
                     <option value="4">Kelas 4</option>
-                    <option value="5" selected>Kelas 5</option>
+                    <option value="5">Kelas 5</option>
                     <option value="6">Kelas 6</option>
                   </select>
                 </div>
@@ -1017,9 +1035,7 @@
                   <select
                     id="kehadiran-select-siswa"
                     class="w-full px-3 py-2 border rounded-lg text-sm bg-gray-50 border-gray-300 font-medium focus:ring-2 focus:ring-brand-500 outline-none"
-                  >
-                    <!-- Otomatis diisi oleh script.js -->
-                  </select>
+                  ></select>
                 </div>
               </div>
             </div>
@@ -1102,7 +1118,6 @@ Ananda menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik dalam
                 </p>
               </div>
 
-              <!-- DROPDOWN PILIHAN KELAS DAN SISWA UNTUK CETAK -->
               <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
                 <div>
                   <label
@@ -1118,7 +1133,7 @@ Ananda menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik dalam
                     <option value="2">Kelas 2</option>
                     <option value="3">Kelas 3</option>
                     <option value="4">Kelas 4</option>
-                    <option value="5" selected>Kelas 5</option>
+                    <option value="5">Kelas 5</option>
                     <option value="6">Kelas 6</option>
                   </select>
                 </div>
@@ -1132,14 +1147,12 @@ Ananda menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik dalam
                     id="cetak-select-siswa"
                     onchange="renderPrintableData()"
                     class="px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-semibold bg-gray-50 text-gray-800 outline-none focus:ring-2 focus:ring-brand-500"
-                  >
-                    <!-- Diisi dinamis oleh JS -->
-                  </select>
+                  ></select>
                 </div>
 
                 <div class="self-end pt-2 sm:pt-0">
                   <button
-                    onclick="window.print()"
+                    onclick="cetakRaportPDF()"
                     class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-4 py-2 rounded-lg text-xs shadow flex items-center transition"
                   >
                     <i class="fa-solid fa-print mr-1.5"></i> Cetak / Simpan PDF
@@ -1148,12 +1161,10 @@ Ananda menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik dalam
               </div>
             </div>
 
-            <!-- LEMBAR RAPORT SIAP CETAK SD -->
             <div
               id="printable-raport"
               class="relative bg-white p-8 rounded-xl border border-gray-300 text-gray-900 overflow-hidden"
             >
-              <!-- WATERMARK LOGO BINTANG GRAYSCALE DI TENGAH RAPORT -->
               <div
                 class="absolute inset-0 flex items-center justify-center pointer-events-none z-0"
               >
@@ -1164,9 +1175,7 @@ Ananda menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik dalam
                 />
               </div>
 
-              <!-- KONTEN RAPORT UTAMA -->
               <div class="relative z-10">
-                <!-- KOP SEKOLAH DENGAN LOGO SB -->
                 <div
                   class="border-b-4 border-double border-gray-800 pb-3 mb-6 flex items-center justify-between"
                 >
@@ -1200,11 +1209,10 @@ Ananda menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik dalam
                   Laporan Hasil Belajar Murid (Raport)
                 </h2>
 
-                <!-- BIO MURID (DINAMIS SINKRON DENGAN SETTING RAPOR) -->
                 <div class="grid grid-cols-2 gap-x-8 gap-y-1 text-sm mb-6">
                   <div class="flex">
                     <span class="w-32 font-semibold">Nama Murid</span
-                    ><span id="print-nama-siswa">: Muhammad Azzam</span>
+                    ><span id="print-nama-siswa">: -</span>
                   </div>
                   <div class="flex">
                     <span class="w-32 font-semibold">Tahun Ajaran</span
@@ -1212,7 +1220,7 @@ Ananda menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik dalam
                   </div>
                   <div class="flex">
                     <span class="w-32 font-semibold">NIS / NISN</span
-                    ><span id="print-nisn-siswa">: 0158293041</span>
+                    ><span id="print-nisn-siswa">: -</span>
                   </div>
                   <div class="flex">
                     <span class="w-32 font-semibold">Semester</span
@@ -1220,7 +1228,7 @@ Ananda menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik dalam
                   </div>
                   <div class="flex">
                     <span class="w-32 font-semibold">Kelas</span
-                    ><span id="print-kelas-siswa">: Kelas 5</span>
+                    ><span id="print-kelas-siswa">: -</span>
                   </div>
                   <div class="flex">
                     <span class="w-32 font-semibold">Tanggal Cetak</span
@@ -1228,7 +1236,6 @@ Ananda menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik dalam
                   </div>
                 </div>
 
-                <!-- KELOMPOK 1: NILAI MAPEL SD -->
                 <div class="mb-6">
                   <h3
                     class="font-bold text-sm mb-2 border-l-4 border-brand-700 pl-2"
@@ -1265,13 +1272,10 @@ Ananda menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik dalam
                         </th>
                       </tr>
                     </thead>
-                    <tbody id="printable-mapel-body">
-                      <!-- Otomatis disinkronkan oleh JS -->
-                    </tbody>
+                    <tbody id="printable-mapel-body"></tbody>
                   </table>
                 </div>
 
-                <!-- KELOMPOK 2: AL-QUR'AN SD -->
                 <div class="mb-6">
                   <h3
                     class="font-bold text-sm mb-2 border-l-4 border-brand-700 pl-2"
@@ -1350,7 +1354,6 @@ Ananda menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik dalam
                   </table>
                 </div>
 
-                <!-- KELOMPOK 3: KEHADIRAN & CATATAN -->
                 <div class="grid grid-cols-3 gap-4 mb-6 text-xs">
                   <div
                     class="col-span-1 border border-gray-400 p-2 rounded bg-white/80"
@@ -1384,7 +1387,6 @@ Ananda menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik dalam
                   </div>
                 </div>
 
-                <!-- TANDA TANGAN 3 PIHAK -->
                 <div class="mt-12 pt-4">
                   <p id="print-titi-mangsa" class="text-right text-xs mb-6">
                     Diberikan di: Jakarta, 14 Agustus 2026
@@ -1406,13 +1408,13 @@ Ananda menunjukkan keceriaan, keaktifan, dan kedisiplinan yang sangat baik dalam
                           id="print-walikelas-nama"
                           class="font-bold underline"
                         >
-                          Ust. Husen
+                          -
                         </p>
                         <p
                           id="print-walikelas-nip"
                           class="text-[10px] text-gray-500"
                         >
-                          NIP. 19880512 202101 1 002
+                          NIP. -
                         </p>
                       </div>
                     </div>

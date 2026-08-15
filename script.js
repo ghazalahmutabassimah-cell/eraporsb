@@ -415,43 +415,60 @@ const dataSiswaByKelas = {
   ],
 };
 
-// Database Wali Kelas Per Kelas
+// Database Wali Kelas Per Kelas (Sudah Include Username & Password Login)
 let dataWaliKelas = [
-  { kelas: "1", nama: "Ustadzah. Fatimah, S.Pd", nip: "19900115 202101 2 001" },
-  { kelas: "2", nama: "Ustadzah. Yuni, S.Pd.I", nip: "19880512 202101 1 001" },
-  { kelas: "3", nama: "Ust. Ahmad Syauqi, M.Pd", nip: "19850320 202001 1 002" },
-  { kelas: "4", nama: "Ustadzah. Maryam, S.Hum", nip: "19920810 202201 2 003" },
-  { kelas: "5", nama: "Ust. Husen, S.Pd.I", nip: "19880512 202101 1 002" },
-  { kelas: "6", nama: "Ust. Abdullah, S.S", nip: "19830411 201901 1 004" },
-];
-
-// Kredensial Login
-const CREDENTIALS = {
-  admin: {
-    username: "admin",
-    password: "adminbintang123",
-    name: "Administrator Utama",
-    roleText: "Super Admin System",
+  {
+    kelas: "1",
+    nama: "Ustadzah. Fatimah, S.Pd",
+    nip: "19900115 202101 2 001",
+    username: "wali1",
+    password: "walibintang123",
   },
-  walikelas: {
+  {
+    kelas: "2",
+    nama: "Ustadzah. Yuni, S.Pd.I",
+    nip: "19880512 202101 1 001",
+    username: "wali2",
+    password: "walibintang123",
+  },
+  {
+    kelas: "3",
+    nama: "Ust. Ahmad Syauqi, M.Pd",
+    nip: "19850320 202001 1 002",
+    username: "wali3",
+    password: "walibintang123",
+  },
+  {
+    kelas: "4",
+    nama: "Ustadzah. Maryam, S.Hum",
+    nip: "19920810 202201 2 003",
+    username: "wali4",
+    password: "walibintang123",
+  },
+  {
+    kelas: "5",
+    nama: "Ust. Husen, S.Pd.I",
+    nip: "19880512 202101 1 002",
     username: "walikelas",
     password: "walibintang123",
-    name: "Ust. Husen, S.Pd.I",
-    roleText: "Wali Kelas V",
   },
-};
+  {
+    kelas: "6",
+    nama: "Ust. Abdullah, S.S",
+    nip: "19830411 201901 1 004",
+    username: "wali6",
+    password: "walibintang123",
+  },
+];
 
 let currentRole = "walikelas";
+let loggedInWaliKelas = null; // Menyimpan data wali kelas yang sedang aktif
 
-// Inisialisasi saat halaman selesai dimuat
 document.addEventListener("DOMContentLoaded", () => {
   checkLoginSession();
   populateFormSetting();
 });
 
-/**
- * Memuat data setting ke dalam form setting-rapor
- */
 function populateFormSetting() {
   const thInput = document.getElementById("setting-tahun-ajaran");
   const smSelect = document.getElementById("setting-semester");
@@ -466,12 +483,8 @@ function populateFormSetting() {
   if (nyInput) nyInput.value = configRapor.niyMudir;
 }
 
-/**
- * Menyimpan Form Setting Rapor
- */
 function simpanSettingRapor(e) {
   e.preventDefault();
-
   configRapor.tahunAjaran = document
     .getElementById("setting-tahun-ajaran")
     .value.trim();
@@ -487,30 +500,24 @@ function simpanSettingRapor(e) {
     .value.trim();
 
   alert("Alhamdulillah! Pengaturan umum Rapor berhasil disimpan.");
-  renderPrintableData(); // Update tampilan cetak
+  renderPrintableData();
 }
 
-/**
- * Memeriksa status login dari LocalStorage
- */
 function checkLoginSession() {
   const isLoggedIn = localStorage.getItem("isLoggedIn");
   const savedRole = localStorage.getItem("userRole");
+  const savedWaliKelas = localStorage.getItem("loggedInWaliKelas");
 
-  if (isLoggedIn === "true" && savedRole && CREDENTIALS[savedRole]) {
+  if (isLoggedIn === "true" && savedRole) {
     currentRole = savedRole;
-    const userCredential = CREDENTIALS[savedRole];
+    if (savedWaliKelas) {
+      loggedInWaliKelas = JSON.parse(savedWaliKelas);
+    }
 
     document.getElementById("login-view")?.classList.add("hidden");
     document.getElementById("app-view")?.classList.remove("hidden");
 
-    const nameDisplay = document.getElementById("user-display-name");
-    const roleDisplay = document.getElementById("user-display-role");
-
-    if (nameDisplay) nameDisplay.textContent = userCredential.name;
-    if (roleDisplay) roleDisplay.textContent = userCredential.roleText;
-
-    updateDropdownSiswa();
+    applyRolePermissions();
   } else {
     document.getElementById("login-view")?.classList.remove("hidden");
     document.getElementById("app-view")?.classList.add("hidden");
@@ -518,8 +525,224 @@ function checkLoginSession() {
 }
 
 /**
- * Memperbarui daftar nama siswa di dropdown Input Nilai Mapel
+ * Terapkan Hak Akses & Pembatasan Tampilan Per Role
  */
+function applyRolePermissions() {
+  const adminMenu = document.getElementById("admin-only-menu");
+  const nameDisplay = document.getElementById("user-display-name");
+  const roleDisplay = document.getElementById("user-display-role");
+
+  if (currentRole === "walikelas" && loggedInWaliKelas) {
+    if (adminMenu) adminMenu.classList.add("hidden");
+    if (nameDisplay) nameDisplay.textContent = loggedInWaliKelas.nama;
+    if (roleDisplay)
+      roleDisplay.textContent = `Wali Kelas ${loggedInWaliKelas.kelas}`;
+
+    // Kunci seluruh dropdown kelas ke kelas perwaliannya
+    lockKelasDropdowns(loggedInWaliKelas.kelas);
+    switchTab("input-mapel");
+  } else {
+    if (adminMenu) adminMenu.classList.remove("hidden");
+    if (nameDisplay) nameDisplay.textContent = "Administrator Utama";
+    if (roleDisplay) roleDisplay.textContent = "Super Admin System";
+
+    unlockKelasDropdowns();
+    switchTab("setting-rapor");
+  }
+}
+
+/**
+ * Mengunci Dropdown Kelas khusus Wali Kelas
+ */
+function lockKelasDropdowns(kelas) {
+  const ids = [
+    "select-kelas",
+    "tahfidz-select-kelas",
+    "kehadiran-select-kelas",
+    "cetak-select-kelas",
+  ];
+
+  ids.forEach((id) => {
+    const select = document.getElementById(id);
+    if (select) {
+      select.value = kelas;
+      select.disabled = true;
+      select.classList.add("bg-gray-100", "cursor-not-allowed");
+    }
+  });
+
+  updateDropdownSiswa();
+  updateTahfidzDropdownSiswa();
+  updateKehadiranDropdownSiswa();
+  updateCetakDropdownSiswa();
+}
+
+/**
+ * Membuka Kunci Dropdown Kelas untuk Admin
+ */
+function unlockKelasDropdowns() {
+  const ids = [
+    "select-kelas",
+    "tahfidz-select-kelas",
+    "kehadiran-select-kelas",
+    "cetak-select-kelas",
+  ];
+
+  ids.forEach((id) => {
+    const select = document.getElementById(id);
+    if (select) {
+      select.disabled = false;
+      select.classList.remove("bg-gray-100", "cursor-not-allowed");
+    }
+  });
+
+  updateDropdownSiswa();
+  updateTahfidzDropdownSiswa();
+  updateKehadiranDropdownSiswa();
+  updateCetakDropdownSiswa();
+}
+
+function setRole(role) {
+  currentRole = role;
+  const btnWali = document.getElementById("btn-role-walikelas");
+  const btnAdmin = document.getElementById("btn-role-admin");
+
+  if (role === "walikelas") {
+    btnWali.className =
+      "flex-1 py-2 text-sm font-semibold rounded-lg bg-white shadow text-brand-700 transition";
+    btnAdmin.className =
+      "flex-1 py-2 text-sm font-semibold rounded-lg text-gray-500 hover:text-gray-700 transition";
+  } else {
+    btnAdmin.className =
+      "flex-1 py-2 text-sm font-semibold rounded-lg bg-white shadow text-brand-700 transition";
+    btnWali.className =
+      "flex-1 py-2 text-sm font-semibold rounded-lg text-gray-500 hover:text-gray-700 transition";
+  }
+}
+
+function handleLogin(e) {
+  e.preventDefault();
+
+  const usernameInput = document.getElementById("login-username")?.value.trim();
+  const passwordInput = document.getElementById("login-password")?.value;
+
+  if (currentRole === "admin") {
+    if (usernameInput === "admin" && passwordInput === "adminbintang123") {
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("userRole", "admin");
+      localStorage.removeItem("loggedInWaliKelas");
+      loggedInWaliKelas = null;
+
+      document.getElementById("login-view").classList.add("hidden");
+      document.getElementById("app-view").classList.remove("hidden");
+      applyRolePermissions();
+    } else {
+      alert("Login Administrator Gagal! Username / Password salah.");
+    }
+  } else {
+    // Login Wali Kelas berdasarkan data Wali Kelas
+    const waliAcc = dataWaliKelas.find(
+      (w) =>
+        (w.username === usernameInput || w.nip === usernameInput) &&
+        w.password === passwordInput,
+    );
+
+    if (waliAcc) {
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("userRole", "walikelas");
+      localStorage.setItem("loggedInWaliKelas", JSON.stringify(waliAcc));
+      loggedInWaliKelas = waliAcc;
+
+      document.getElementById("login-view").classList.add("hidden");
+      document.getElementById("app-view").classList.remove("hidden");
+      applyRolePermissions();
+    } else {
+      alert("Login Wali Kelas Gagal! Username atau password salah.");
+    }
+  }
+}
+
+function logout() {
+  localStorage.removeItem("isLoggedIn");
+  localStorage.removeItem("userRole");
+  localStorage.removeItem("loggedInWaliKelas");
+  loggedInWaliKelas = null;
+
+  const loginForm = document.querySelector("#login-view form");
+  if (loginForm) loginForm.reset();
+
+  document.getElementById("app-view").classList.add("hidden");
+  document.getElementById("login-view").classList.remove("hidden");
+}
+
+function toggleSubMenuInput() {
+  const container = document.getElementById("submenu-input-container");
+  const arrow = document.getElementById("icon-submenu-arrow");
+
+  if (container) container.classList.toggle("hidden");
+  if (arrow) arrow.classList.toggle("rotate-180");
+}
+
+function switchTab(tabName) {
+  const tabs = [
+    "setting-rapor",
+    "input-mapel",
+    "kelola-mapel",
+    "input-siswa",
+    "input-walikelas",
+    "input-tahfidz",
+    "input-kehadiran",
+    "cetak-raport",
+  ];
+
+  tabs.forEach((t) => {
+    const tabElement = document.getElementById(`tab-${t}`);
+    const navElement = document.getElementById(`nav-${t}`);
+
+    if (tabElement) tabElement.classList.add("hidden");
+    if (navElement) {
+      if (["input-mapel", "input-tahfidz", "input-kehadiran"].includes(t)) {
+        navElement.className =
+          "w-full flex items-center px-3 py-2 text-xs font-medium rounded-lg text-gray-600 hover:bg-gray-50 transition";
+      } else {
+        navElement.className =
+          "w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 transition";
+      }
+    }
+  });
+
+  const targetTab = document.getElementById(`tab-${tabName}`);
+  const targetNav = document.getElementById(`nav-${tabName}`);
+
+  if (targetTab) targetTab.classList.remove("hidden");
+
+  if (targetNav) {
+    if (["input-mapel", "input-tahfidz", "input-kehadiran"].includes(tabName)) {
+      targetNav.className =
+        "w-full flex items-center px-3 py-2 text-xs font-bold rounded-lg text-brand-700 bg-brand-50 shadow-sm transition";
+    } else {
+      targetNav.className =
+        "w-full flex items-center px-3 py-2.5 text-sm font-bold rounded-lg text-brand-700 bg-brand-50 shadow-sm transition";
+    }
+  }
+
+  if (["input-mapel", "input-tahfidz", "input-kehadiran"].includes(tabName)) {
+    const submenuContainer = document.getElementById("submenu-input-container");
+    const arrow = document.getElementById("icon-submenu-arrow");
+
+    if (submenuContainer) submenuContainer.classList.remove("hidden");
+    if (arrow) arrow.classList.add("rotate-180");
+  }
+
+  if (tabName === "setting-rapor") populateFormSetting();
+  else if (tabName === "kelola-mapel") renderTabelKelolaMapel();
+  else if (tabName === "input-siswa") renderTabelSiswa();
+  else if (tabName === "input-walikelas") renderTabelWaliKelas();
+  else if (tabName === "input-tahfidz") updateTahfidzDropdownSiswa();
+  else if (tabName === "input-kehadiran") updateKehadiranDropdownSiswa();
+  else if (tabName === "cetak-raport") updateCetakDropdownSiswa();
+}
+
 function updateDropdownSiswa() {
   const selectKelas = document.getElementById("select-kelas");
   const selectSiswa = document.getElementById("select-siswa");
@@ -536,9 +759,6 @@ function updateDropdownSiswa() {
   renderMapelTable();
 }
 
-/**
- * Memperbarui daftar siswa di dropdown TAHFIDZ
- */
 function updateTahfidzDropdownSiswa() {
   const kelasSelect = document.getElementById("tahfidz-select-kelas");
   const siswaSelect = document.getElementById("tahfidz-select-siswa");
@@ -553,9 +773,6 @@ function updateTahfidzDropdownSiswa() {
   });
 }
 
-/**
- * Memperbarui daftar siswa di dropdown KEHADIRAN
- */
 function updateKehadiranDropdownSiswa() {
   const kelasSelect = document.getElementById("kehadiran-select-kelas");
   const siswaSelect = document.getElementById("kehadiran-select-siswa");
@@ -570,9 +787,6 @@ function updateKehadiranDropdownSiswa() {
   });
 }
 
-/**
- * Memperbarui daftar siswa di dropdown HALAMAN CETAK RAPORT
- */
 function updateCetakDropdownSiswa() {
   const kelasSelect = document.getElementById("cetak-select-kelas");
   const siswaSelect = document.getElementById("cetak-select-siswa");
@@ -589,9 +803,6 @@ function updateCetakDropdownSiswa() {
   renderPrintableData();
 }
 
-/**
- * Render Biodata Murid, Wali Kelas, Mudir & Tabel Nilai untuk Lembar Cetak Raport
- */
 function renderPrintableData() {
   const kelasSelect = document.getElementById("cetak-select-kelas");
   const siswaSelect = document.getElementById("cetak-select-siswa");
@@ -603,7 +814,6 @@ function renderPrintableData() {
   const selectedSiswa =
     listSiswa.find((s) => s.nisn === nisnVal) || listSiswa[0];
 
-  // 1. Update Biodata Murid & Pengaturan Umum Rapor
   const printNama = document.getElementById("print-nama-siswa");
   const printNisn = document.getElementById("print-nisn-siswa");
   const printKelas = document.getElementById("print-kelas-siswa");
@@ -623,35 +833,27 @@ function renderPrintableData() {
   if (printTiti)
     printTiti.textContent = `Diberikan di: Jakarta, ${configRapor.tanggalCetak}`;
 
-  // 2. Update Nama Wali Kelas & NIP Sesuai Kelas
   const printWaliNama = document.getElementById("print-walikelas-nama");
   const printWaliNip = document.getElementById("print-walikelas-nip");
   const waliAktif = dataWaliKelas.find((w) => w.kelas === kelasVal);
 
-  if (printWaliNama) {
+  if (printWaliNama)
     printWaliNama.textContent = waliAktif
       ? waliAktif.nama
       : "( .................................... )";
-  }
-  if (printWaliNip) {
+  if (printWaliNip)
     printWaliNip.textContent = waliAktif ? `NIP. ${waliAktif.nip}` : "NIP. -";
-  }
 
-  // 3. Update Nama Mudir & NIY
   const printMudirNama = document.getElementById("print-mudir-nama");
   const printMudirNiy = document.getElementById("print-mudir-niy");
 
   if (printMudirNama) printMudirNama.textContent = configRapor.namaMudir;
   if (printMudirNiy) printMudirNiy.textContent = `NIY. ${configRapor.niyMudir}`;
 
-  // 4. Update Tabel Mapel
   const listMapel = mapelByKelas[kelasVal] || [];
   renderPrintableMapel(listMapel);
 }
 
-/**
- * Render Tabel Nilai Mapel untuk Lembar Cetak Raport
- */
 function renderPrintableMapel(listMapel) {
   const printBody = document.getElementById("printable-mapel-body");
   if (!printBody) return;
@@ -679,9 +881,6 @@ function renderPrintableMapel(listMapel) {
   });
 }
 
-/**
- * Render Tabel Mata Pelajaran (Tab Input Nilai)
- */
 function renderMapelTable() {
   const tbody = document.getElementById("table-mapel-body");
   const selectKelas = document.getElementById("select-kelas");
@@ -708,330 +907,15 @@ function renderMapelTable() {
 }
 
 /**
- * Mengatur Role pengguna (Wali Kelas / Admin)
- */
-function setRole(role) {
-  currentRole = role;
-  const btnWali = document.getElementById("btn-role-walikelas");
-  const btnAdmin = document.getElementById("btn-role-admin");
-
-  if (role === "walikelas") {
-    btnWali.className =
-      "flex-1 py-2 text-sm font-semibold rounded-lg bg-white shadow text-brand-700 transition";
-    btnAdmin.className =
-      "flex-1 py-2 text-sm font-semibold rounded-lg text-gray-500 hover:text-gray-700 transition";
-  } else {
-    btnAdmin.className =
-      "flex-1 py-2 text-sm font-semibold rounded-lg bg-white shadow text-brand-700 transition";
-    btnWali.className =
-      "flex-1 py-2 text-sm font-semibold rounded-lg text-gray-500 hover:text-gray-700 transition";
-  }
-}
-
-/**
- * Memproses Validasi Login
- */
-function handleLogin(e) {
-  e.preventDefault();
-
-  const usernameInput = document.getElementById("login-username")?.value.trim();
-  const passwordInput = document.getElementById("login-password")?.value;
-
-  const userCredential = CREDENTIALS[currentRole];
-
-  if (
-    usernameInput !== userCredential.username ||
-    passwordInput !== userCredential.password
-  ) {
-    alert(
-      `Login Gagal! Username atau password ${currentRole === "admin" ? "Administrator" : "Wali Kelas SD"} salah.`,
-    );
-    return;
-  }
-
-  localStorage.setItem("isLoggedIn", "true");
-  localStorage.setItem("userRole", currentRole);
-
-  document.getElementById("login-view").classList.add("hidden");
-  document.getElementById("app-view").classList.remove("hidden");
-
-  const nameDisplay = document.getElementById("user-display-name");
-  const roleDisplay = document.getElementById("user-display-role");
-
-  if (nameDisplay) nameDisplay.textContent = userCredential.name;
-  if (roleDisplay) roleDisplay.textContent = userCredential.roleText;
-
-  updateDropdownSiswa();
-}
-
-/**
- * Keluar dari Aplikasi
- */
-function logout() {
-  localStorage.removeItem("isLoggedIn");
-  localStorage.removeItem("userRole");
-
-  const loginForm = document.querySelector("#login-view form");
-  if (loginForm) loginForm.reset();
-
-  document.getElementById("app-view").classList.add("hidden");
-  document.getElementById("login-view").classList.remove("hidden");
-}
-
-/**
- * Toggle Tampil/Sembunyi Sub-Menu Input
- */
-function toggleSubMenuInput() {
-  const container = document.getElementById("submenu-input-container");
-  const arrow = document.getElementById("icon-submenu-arrow");
-
-  if (container) {
-    container.classList.toggle("hidden");
-  }
-  if (arrow) {
-    arrow.classList.toggle("rotate-180");
-  }
-}
-
-/**
- * Navigasi Antar Tab Menu & Sub-Menu
- */
-function switchTab(tabName) {
-  const tabs = [
-    "setting-rapor",
-    "input-mapel",
-    "kelola-mapel",
-    "input-siswa",
-    "input-walikelas",
-    "input-tahfidz",
-    "input-kehadiran",
-    "cetak-raport",
-  ];
-
-  tabs.forEach((t) => {
-    const tabElement = document.getElementById(`tab-${t}`);
-    const navElement = document.getElementById(`nav-${t}`);
-
-    if (tabElement) tabElement.classList.add("hidden");
-
-    if (navElement) {
-      // Pembeda styling untuk Sub-Menu vs Menu Utama
-      if (["input-mapel", "input-tahfidz", "input-kehadiran"].includes(t)) {
-        navElement.className =
-          "w-full flex items-center px-3 py-2 text-xs font-medium rounded-lg text-gray-600 hover:bg-gray-50 transition";
-      } else {
-        navElement.className =
-          "w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 transition";
-      }
-    }
-  });
-
-  const targetTab = document.getElementById(`tab-${tabName}`);
-  const targetNav = document.getElementById(`nav-${tabName}`);
-
-  if (targetTab) targetTab.classList.remove("hidden");
-
-  if (targetNav) {
-    if (["input-mapel", "input-tahfidz", "input-kehadiran"].includes(tabName)) {
-      targetNav.className =
-        "w-full flex items-center px-3 py-2 text-xs font-bold rounded-lg text-brand-700 bg-brand-50 shadow-sm transition";
-    } else {
-      targetNav.className =
-        "w-full flex items-center px-3 py-2.5 text-sm font-bold rounded-lg text-brand-700 bg-brand-50 shadow-sm transition";
-    }
-  }
-
-  // Jika memilih salah satu Sub-Menu Input, pastikan container sub-menu terbuka
-  if (["input-mapel", "input-tahfidz", "input-kehadiran"].includes(tabName)) {
-    const submenuContainer = document.getElementById("submenu-input-container");
-    const arrow = document.getElementById("icon-submenu-arrow");
-
-    if (submenuContainer) submenuContainer.classList.remove("hidden");
-    if (arrow) arrow.classList.add("rotate-180");
-  }
-
-  // Panggilan fungsi sesuai tab yang diakses
-  if (tabName === "setting-rapor") {
-    populateFormSetting();
-  } else if (tabName === "kelola-mapel") {
-    renderTabelKelolaMapel();
-  } else if (tabName === "input-siswa") {
-    renderTabelSiswa();
-  } else if (tabName === "input-walikelas") {
-    renderTabelWaliKelas();
-  } else if (tabName === "input-tahfidz") {
-    updateTahfidzDropdownSiswa();
-  } else if (tabName === "input-kehadiran") {
-    updateKehadiranDropdownSiswa();
-  } else if (tabName === "cetak-raport") {
-    updateCetakDropdownSiswa();
-  }
-}
-
-/**
- * Menambahkan Mata Pelajaran Baru
- */
-function tambahMapelBaru(e) {
-  e.preventDefault();
-  const kelas = document.getElementById("tambah-mapel-kelas").value;
-  const nama = document.getElementById("tambah-mapel-nama").value.trim();
-  const nilai =
-    parseInt(document.getElementById("tambah-mapel-nilai").value) || 80;
-  const desc = document.getElementById("tambah-mapel-desc").value.trim();
-
-  if (!mapelByKelas[kelas]) {
-    mapelByKelas[kelas] = [];
-  }
-
-  const newId = mapelByKelas[kelas].length + 1;
-  mapelByKelas[kelas].push({
-    id: newId,
-    name: nama,
-    value: nilai,
-    desc: desc,
-  });
-
-  alert(
-    `Alhamdulillah! Mata pelajaran "${nama}" berhasil ditambahkan ke Kelas ${kelas}.`,
-  );
-
-  document.getElementById("tambah-mapel-nama").value = "";
-  document.getElementById("tambah-mapel-desc").value = "";
-
-  renderTabelKelolaMapel();
-  renderMapelTable();
-}
-
-/**
- * Render Tabel Kelola Mapel
- */
-function renderTabelKelolaMapel() {
-  const tbody = document.getElementById("table-kelola-mapel-body");
-  const kelasSelect = document.getElementById("tambah-mapel-kelas");
-  if (!tbody) return;
-
-  const kelasVal = kelasSelect ? kelasSelect.value : "5";
-  const listMapel = mapelByKelas[kelasVal] || [];
-
-  tbody.innerHTML = "";
-
-  if (listMapel.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-3 text-center text-gray-400">Belum ada mata pelajaran untuk kelas ini.</td></tr>`;
-    return;
-  }
-
-  listMapel.forEach((m, index) => {
-    tbody.innerHTML += `
-      <tr class="hover:bg-gray-50 transition">
-        <td class="px-4 py-3 font-semibold text-gray-500">${index + 1}</td>
-        <td class="px-4 py-3 font-bold text-gray-800">${m.name}</td>
-        <td class="px-4 py-3 text-center font-semibold text-brand-700">${m.value}</td>
-        <td class="px-4 py-3 text-xs text-gray-600">${m.desc}</td>
-        <td class="px-4 py-3 text-center">
-          <button type="button" onclick="hapusMapel('${kelasVal}', ${index})" class="text-red-600 hover:text-red-800 text-xs font-semibold px-2 py-1 rounded hover:bg-red-50 transition">
-            <i class="fa-solid fa-trash mr-1"></i> Hapus
-          </button>
-        </td>
-      </tr>
-    `;
-  });
-}
-
-/**
- * Menghapus Mata Pelajaran
- */
-function hapusMapel(kelas, index) {
-  if (confirm("Apakah Anda yakin ingin menghapus mata pelajaran ini?")) {
-    mapelByKelas[kelas].splice(index, 1);
-    renderTabelKelolaMapel();
-    renderMapelTable();
-  }
-}
-
-/**
- * Menambahkan Siswa Baru
- */
-function tambahSiswa(e) {
-  e.preventDefault();
-  const kelas = document.getElementById("tambah-siswa-kelas").value;
-  const nisn = document.getElementById("tambah-siswa-nisn").value.trim();
-  const nama = document.getElementById("tambah-siswa-nama").value.trim();
-
-  if (!dataSiswaByKelas[kelas]) {
-    dataSiswaByKelas[kelas] = [];
-  }
-
-  dataSiswaByKelas[kelas].push({
-    nisn: nisn,
-    name: nama,
-  });
-
-  alert("Alhamdulillah! Data siswa berhasil ditambahkan.");
-
-  document.getElementById("tambah-siswa-nisn").value = "";
-  document.getElementById("tambah-siswa-nama").value = "";
-
-  updateDropdownSiswa();
-  renderTabelSiswa();
-}
-
-/**
- * Render Tabel Daftar Siswa
- */
-function renderTabelSiswa() {
-  const tbody = document.getElementById("table-siswa-body");
-  const kelasSelect = document.getElementById("tambah-siswa-kelas");
-  if (!tbody) return;
-
-  const kelasVal = kelasSelect ? kelasSelect.value : "5";
-  const listSiswa = dataSiswaByKelas[kelasVal] || [];
-
-  tbody.innerHTML = "";
-
-  if (listSiswa.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="3" class="px-4 py-3 text-center text-gray-400">Belum ada data siswa di kelas ini.</td></tr>`;
-    return;
-  }
-
-  listSiswa.forEach((s) => {
-    tbody.innerHTML += `
-      <tr class="hover:bg-gray-50 transition">
-        <td class="px-4 py-3 font-semibold text-gray-700">${s.nisn}</td>
-        <td class="px-4 py-3 font-bold text-gray-800">${s.name}</td>
-        <td class="px-4 py-3 text-center">
-          <button type="button" onclick="hapusSiswa('${kelasVal}', '${s.nisn}')" class="text-red-600 hover:text-red-800 text-xs font-semibold px-2 py-1 rounded hover:bg-red-50 transition">
-            <i class="fa-solid fa-trash mr-1"></i> Hapus
-          </button>
-        </td>
-      </tr>
-    `;
-  });
-}
-
-/**
- * Menghapus Data Siswa
- */
-function hapusSiswa(kelas, nisn) {
-  if (confirm("Apakah Anda yakin ingin menghapus data siswa ini?")) {
-    dataSiswaByKelas[kelas] = dataSiswaByKelas[kelas].filter(
-      (s) => s.nisn !== nisn,
-    );
-    updateDropdownSiswa();
-    renderTabelSiswa();
-  }
-}
-
-/**
- * Render Tabel Daftar Wali Kelas
+ * Render Tabel Wali Kelas Termasuk Username & Password
  */
 function renderTabelWaliKelas() {
   const tbody = document.getElementById("table-walikelas-body");
   if (!tbody) return;
 
   tbody.innerHTML = "";
-
   if (dataWaliKelas.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-3 text-center text-gray-400">Belum ada data wali kelas.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-3 text-center text-gray-400">Belum ada data wali kelas.</td></tr>`;
     return;
   }
 
@@ -1044,6 +928,8 @@ function renderTabelWaliKelas() {
         <td class="px-4 py-3 font-bold text-brand-800">Kelas ${w.kelas}</td>
         <td class="px-4 py-3 font-bold text-gray-800">${w.nama}</td>
         <td class="px-4 py-3 text-xs text-gray-600">${w.nip}</td>
+        <td class="px-4 py-3 text-xs font-bold text-brand-700">${w.username || "-"}</td>
+        <td class="px-4 py-3 text-xs font-mono text-gray-600">${w.password || "-"}</td>
         <td class="px-4 py-3 text-center space-x-1">
           <button type="button" onclick="editWaliKelas('${w.kelas}')" class="text-blue-600 hover:text-blue-800 text-xs font-semibold px-2 py-1 rounded hover:bg-blue-50 transition">
             <i class="fa-solid fa-pen-to-square mr-1"></i> Edit
@@ -1058,55 +944,49 @@ function renderTabelWaliKelas() {
 }
 
 /**
- * Menyimpan / Memperbarui Data Wali Kelas
+ * Menyimpan / Memperbarui Data Wali Kelas & Kredensial Login
  */
 function simpanWaliKelas(e) {
   e.preventDefault();
   const kelas = document.getElementById("walikelas-kelas").value;
   const nip = document.getElementById("walikelas-nip").value.trim();
   const nama = document.getElementById("walikelas-nama").value.trim();
+  const username = document.getElementById("walikelas-username").value.trim();
+  const password = document.getElementById("walikelas-password").value.trim();
 
   const index = dataWaliKelas.findIndex((w) => w.kelas === kelas);
 
   if (index !== -1) {
-    dataWaliKelas[index] = { kelas, nama, nip };
+    dataWaliKelas[index] = { kelas, nama, nip, username, password };
   } else {
-    dataWaliKelas.push({ kelas, nama, nip });
-  }
-
-  const nameDisplay = document.getElementById("user-display-name");
-  const roleDisplay = document.getElementById("user-display-role");
-  if (kelas === "5" && nameDisplay && roleDisplay) {
-    nameDisplay.textContent = nama;
-    roleDisplay.textContent = `Wali Kelas ${kelas}`;
+    dataWaliKelas.push({ kelas, nama, nip, username, password });
   }
 
   alert(
-    `Alhamdulillah! Data Wali Kelas untuk Kelas ${kelas} berhasil disimpan.`,
+    `Alhamdulillah! Data Wali Kelas ${kelas} dan Akun Login berhasil disimpan.`,
   );
 
   document.getElementById("walikelas-nip").value = "";
   document.getElementById("walikelas-nama").value = "";
+  document.getElementById("walikelas-username").value = "";
+  document.getElementById("walikelas-password").value = "";
+
   renderTabelWaliKelas();
   renderPrintableData();
 }
 
-/**
- * Mengisi form untuk mengedit data Wali Kelas
- */
 function editWaliKelas(kelas) {
   const data = dataWaliKelas.find((w) => w.kelas === kelas);
   if (data) {
     document.getElementById("walikelas-kelas").value = data.kelas;
     document.getElementById("walikelas-nip").value = data.nip;
     document.getElementById("walikelas-nama").value = data.nama;
+    document.getElementById("walikelas-username").value = data.username || "";
+    document.getElementById("walikelas-password").value = data.password || "";
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 }
 
-/**
- * Menghapus Data Wali Kelas
- */
 function hapusWaliKelas(kelas) {
   if (confirm(`Apakah Anda yakin ingin menghapus data Wali Kelas ${kelas}?`)) {
     dataWaliKelas = dataWaliKelas.filter((w) => w.kelas !== kelas);
@@ -1115,9 +995,13 @@ function hapusWaliKelas(kelas) {
   }
 }
 
-/**
- * Notifikasi Simpan Data
- */
+function cetakRaportPDF() {
+  switchTab("cetak-raport");
+  setTimeout(() => {
+    window.print();
+  }, 300);
+}
+
 function saveDataAlert() {
   alert("Alhamdulillah! Data berhasil disimpan ke sistem eRapor.");
 }
