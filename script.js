@@ -415,7 +415,7 @@ const dataSiswaByKelas = {
   ],
 };
 
-// Database Wali Kelas Per Kelas (Sudah Include Username & Password Login)
+// Database Wali Kelas Per Kelas (Termasuk Username & Password)
 let dataWaliKelas = [
   {
     kelas: "1",
@@ -462,7 +462,7 @@ let dataWaliKelas = [
 ];
 
 let currentRole = "walikelas";
-let loggedInWaliKelas = null; // Menyimpan data wali kelas yang sedang aktif
+let loggedInWaliKelas = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   checkLoginSession();
@@ -538,7 +538,6 @@ function applyRolePermissions() {
     if (roleDisplay)
       roleDisplay.textContent = `Wali Kelas ${loggedInWaliKelas.kelas}`;
 
-    // Kunci seluruh dropdown kelas ke kelas perwaliannya
     lockKelasDropdowns(loggedInWaliKelas.kelas);
     switchTab("input-mapel");
   } else {
@@ -547,13 +546,11 @@ function applyRolePermissions() {
     if (roleDisplay) roleDisplay.textContent = "Super Admin System";
 
     unlockKelasDropdowns();
+    renderTabelWaliKelas(); // Panggilan otomatis saat Admin Login
     switchTab("setting-rapor");
   }
 }
 
-/**
- * Mengunci Dropdown Kelas khusus Wali Kelas
- */
 function lockKelasDropdowns(kelas) {
   const ids = [
     "select-kelas",
@@ -577,9 +574,6 @@ function lockKelasDropdowns(kelas) {
   updateCetakDropdownSiswa();
 }
 
-/**
- * Membuka Kunci Dropdown Kelas untuk Admin
- */
 function unlockKelasDropdowns() {
   const ids = [
     "select-kelas",
@@ -640,7 +634,6 @@ function handleLogin(e) {
       alert("Login Administrator Gagal! Username / Password salah.");
     }
   } else {
-    // Login Wali Kelas berdasarkan data Wali Kelas
     const waliAcc = dataWaliKelas.find(
       (w) =>
         (w.username === usernameInput || w.nip === usernameInput) &&
@@ -907,7 +900,7 @@ function renderMapelTable() {
 }
 
 /**
- * Render Tabel Wali Kelas Termasuk Username & Password
+ * Render Tabel Wali Kelas Termasuk Username & Password Sesuai Kolom Header
  */
 function renderTabelWaliKelas() {
   const tbody = document.getElementById("table-walikelas-body");
@@ -943,9 +936,6 @@ function renderTabelWaliKelas() {
   });
 }
 
-/**
- * Menyimpan / Memperbarui Data Wali Kelas & Kredensial Login
- */
 function simpanWaliKelas(e) {
   e.preventDefault();
   const kelas = document.getElementById("walikelas-kelas").value;
