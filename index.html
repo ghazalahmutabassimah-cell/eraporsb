@@ -184,6 +184,16 @@
               Menu Utama
             </p>
             <nav class="space-y-1">
+              <!-- MENU DASHBOARD (SELALU ADA) -->
+              <button
+                onclick="switchTab('dashboard')"
+                id="nav-dashboard"
+                class="w-full flex items-center px-3 py-2.5 text-sm font-bold rounded-lg text-brand-700 bg-brand-50 shadow-sm transition"
+              >
+                <i class="fa-solid fa-chart-pie w-6 text-brand-600"></i>
+                Dashboard
+              </button>
+
               <!-- MENU KHUSUS ADMIN -->
               <div id="admin-only-menu" class="space-y-1">
                 <button
@@ -223,7 +233,7 @@
                 </button>
               </div>
 
-              <!-- ================= MENU INPUT & SUB-MENU ================= -->
+              <!-- MENU INPUT & SUB-MENU -->
               <div class="space-y-1 pt-1">
                 <button
                   type="button"
@@ -293,6 +303,131 @@
 
         <!-- Main Content Area -->
         <main class="md:col-span-3">
+          <!-- TAB DASHBOARD DINAMIS -->
+          <section
+            id="tab-dashboard"
+            class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6"
+          >
+            <div class="border-b pb-4">
+              <h3 id="dash-title" class="text-xl font-bold text-gray-800">
+                Ringkasan Statistik System
+              </h3>
+              <p id="dash-subtitle" class="text-sm text-gray-500">
+                Memantau progres pengisian nilai eRapor Sekolah Dasar.
+              </p>
+            </div>
+
+            <!-- DASHBOARD VIEW: ADMINISTRATOR -->
+            <div id="dash-admin-content" class="space-y-6">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div
+                  class="bg-gradient-to-r from-brand-500 to-brand-700 text-white p-5 rounded-xl shadow-sm flex items-center justify-between"
+                >
+                  <div>
+                    <p class="text-xs uppercase font-bold text-brand-100">
+                      Total Siswa Terdaftar
+                    </p>
+                    <h4
+                      id="dash-total-siswa"
+                      class="text-3xl font-extrabold mt-1"
+                    >
+                      0
+                    </h4>
+                  </div>
+                  <i class="fa-solid fa-users text-4xl opacity-80"></i>
+                </div>
+
+                <div
+                  class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-5 rounded-xl shadow-sm flex items-center justify-between"
+                >
+                  <div>
+                    <p class="text-xs uppercase font-bold text-blue-100">
+                      Total Wali Kelas
+                    </p>
+                    <h4
+                      id="dash-total-walikelas"
+                      class="text-3xl font-extrabold mt-1"
+                    >
+                      0
+                    </h4>
+                  </div>
+                  <i
+                    class="fa-solid fa-chalkboard-user text-4xl opacity-80"
+                  ></i>
+                </div>
+              </div>
+
+              <div>
+                <h4
+                  class="font-bold text-gray-800 text-base mb-3 flex items-center"
+                >
+                  <i class="fa-solid fa-chart-line mr-2 text-brand-600"></i>
+                  Progres Input Nilai Per Kelas
+                </h4>
+                <div
+                  class="grid grid-cols-1 md:grid-cols-2 gap-4"
+                  id="dash-progress-kelas-container"
+                >
+                  <!-- Diisi secara dinamis oleh JavaScript -->
+                </div>
+              </div>
+            </div>
+
+            <!-- DASHBOARD VIEW: WALI KELAS -->
+            <div id="dash-wali-content" class="hidden space-y-6">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div
+                  class="bg-gradient-to-r from-emerald-500 to-teal-700 text-white p-5 rounded-xl shadow-sm flex items-center justify-between"
+                >
+                  <div>
+                    <p class="text-xs uppercase font-bold text-emerald-100">
+                      Jumlah Siswa Binaan
+                    </p>
+                    <h4
+                      id="dash-wali-total-siswa"
+                      class="text-3xl font-extrabold mt-1"
+                    >
+                      0
+                    </h4>
+                  </div>
+                  <i class="fa-solid fa-user-graduate text-4xl opacity-80"></i>
+                </div>
+
+                <div
+                  class="bg-gradient-to-r from-cyan-600 to-blue-700 text-white p-5 rounded-xl shadow-sm flex items-center justify-between"
+                >
+                  <div>
+                    <p class="text-xs uppercase font-bold text-cyan-100">
+                      Jumlah Mata Pelajaran
+                    </p>
+                    <h4
+                      id="dash-wali-total-mapel"
+                      class="text-3xl font-extrabold mt-1"
+                    >
+                      0
+                    </h4>
+                  </div>
+                  <i class="fa-solid fa-book-bookmark text-4xl opacity-80"></i>
+                </div>
+              </div>
+
+              <div>
+                <h4
+                  class="font-bold text-gray-800 text-base mb-3 flex items-center"
+                >
+                  <i class="fa-solid fa-list-check mr-2 text-brand-600"></i>
+                  Status Kelengkapan Input eRapor Kelas
+                </h4>
+                <div
+                  class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+                  id="dash-wali-status-container"
+                >
+                  <!-- Diisi secara dinamis oleh JavaScript -->
+                </div>
+              </div>
+            </div>
+          </section>
+
           <!-- TAB SETTING RAPOR -->
           <section
             id="tab-setting-rapor"
@@ -402,7 +537,7 @@
           <!-- TAB 1: INPUT NILAI MAPEL -->
           <section
             id="tab-input-mapel"
-            class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6"
+            class="hidden bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6"
           >
             <div
               class="border-b pb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
@@ -684,7 +819,7 @@
             </div>
           </section>
 
-          <!-- TAB 4: INPUT DATA WALI KELAS + USERNAME & PASSWORD -->
+          <!-- TAB 4: INPUT DATA WALI KELAS -->
           <section
             id="tab-input-walikelas"
             class="hidden bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6"
@@ -748,7 +883,6 @@
                 />
               </div>
 
-              <!-- BIDANG INPUT AKUN LOGIN WALI KELAS -->
               <div>
                 <label
                   class="block text-xs font-bold text-brand-700 mb-1 uppercase"

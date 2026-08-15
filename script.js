@@ -11,6 +11,16 @@ let configRapor = {
   niyMudir: "201501 001",
 };
 
+// Database Persentase Input Nilai Default (Untuk Admin Dashboard)
+const progressNilaiKelas = {
+  1: 100,
+  2: 85,
+  3: 90,
+  4: 75,
+  5: 95,
+  6: 100,
+};
+
 // Database Mata Pelajaran Berdasarkan Tingkat Kelas (1 s.d. 6 SD)
 const mapelByKelas = {
   1: [
@@ -415,7 +425,7 @@ const dataSiswaByKelas = {
   ],
 };
 
-// Database Wali Kelas Per Kelas (Termasuk Username & Password)
+// Database Wali Kelas Per Kelas
 let dataWaliKelas = [
   {
     kelas: "1",
@@ -539,15 +549,151 @@ function applyRolePermissions() {
       roleDisplay.textContent = `Wali Kelas ${loggedInWaliKelas.kelas}`;
 
     lockKelasDropdowns(loggedInWaliKelas.kelas);
-    switchTab("input-mapel");
+    switchTab("dashboard");
   } else {
     if (adminMenu) adminMenu.classList.remove("hidden");
     if (nameDisplay) nameDisplay.textContent = "Administrator Utama";
     if (roleDisplay) roleDisplay.textContent = "Super Admin System";
 
     unlockKelasDropdowns();
-    renderTabelWaliKelas(); // Panggilan otomatis saat Admin Login
-    switchTab("setting-rapor");
+    switchTab("dashboard");
+  }
+}
+
+/**
+ * Render Data Dashboard Sesuai Role
+ */
+function renderDashboard() {
+  const dashTitle = document.getElementById("dash-title");
+  const dashSub = document.getElementById("dash-subtitle");
+  const adminContent = document.getElementById("dash-admin-content");
+  const waliContent = document.getElementById("dash-wali-content");
+
+  if (currentRole === "admin") {
+    if (dashTitle) dashTitle.textContent = "Dashboard Administrator eRapor";
+    if (dashSub)
+      dashSub.textContent =
+        "Ringkasan total siswa, wali kelas, dan statistik pengisian nilai per kelas.";
+
+    if (adminContent) adminContent.classList.remove("hidden");
+    if (waliContent) waliContent.classList.add("hidden");
+
+    // Total Siswa
+    let totalSiswa = 0;
+    Object.keys(dataSiswaByKelas).forEach((k) => {
+      totalSiswa += dataSiswaByKelas[k].length;
+    });
+
+    const elTotalSiswa = document.getElementById("dash-total-siswa");
+    const elTotalWali = document.getElementById("dash-total-walikelas");
+    if (elTotalSiswa) elTotalSiswa.textContent = totalSiswa;
+    if (elTotalWali) elTotalWali.textContent = dataWaliKelas.length;
+
+    // Progress Nilai per Kelas
+    const progressContainer = document.getElementById(
+      "dash-progress-kelas-container",
+    );
+    if (progressContainer) {
+      progressContainer.innerHTML = "";
+      for (let k = 1; k <= 6; k++) {
+        const persentase = progressNilaiKelas[k] || 0;
+        const wali = dataWaliKelas.find((w) => w.kelas === String(k));
+        const namaWali = wali ? wali.nama : "Belum ditentukan";
+
+        progressContainer.innerHTML += `
+          <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl">
+            <div class="flex justify-between items-center mb-1">
+              <span class="font-bold text-gray-800 text-sm">Kelas ${k}</span>
+              <span class="text-xs font-extrabold text-brand-700 bg-brand-100 px-2 py-0.5 rounded-full">${persentase}% Terisi</span>
+            </div>
+            <p class="text-xs text-gray-500 mb-2 font-medium">Wali: ${namaWali}</p>
+            <div class="w-full bg-gray-200 h-2.5 rounded-full overflow-hidden">
+              <div class="bg-brand-600 h-2.5 rounded-full transition-all duration-500" style="width: ${persentase}%"></div>
+            </div>
+          </div>
+        `;
+      }
+    }
+  } else {
+    // Wali Kelas Dashboard
+    const kelasWali = loggedInWaliKelas ? loggedInWaliKelas.kelas : "5";
+    if (dashTitle) dashTitle.textContent = `Dashboard Wali Kelas ${kelasWali}`;
+    if (dashSub)
+      dashSub.textContent = `Monitoring kelengkapan berkas nilai murid Kelas ${kelasWali}.`;
+
+    if (adminContent) adminContent.classList.add("hidden");
+    if (waliContent) waliContent.classList.remove("hidden");
+
+    const listSiswa = dataSiswaByKelas[kelasWali] || [];
+    const listMapel = mapelByKelas[kelasWali] || [];
+
+    const elWaliSiswa = document.getElementById("dash-wali-total-siswa");
+    const elWaliMapel = document.getElementById("dash-wali-total-mapel");
+
+    if (elWaliSiswa) elWaliSiswa.textContent = listSiswa.length;
+    if (elWaliMapel) elWaliMapel.textContent = listMapel.length;
+
+    // Ringkasan Status Input Kelas
+    const statusContainer = document.getElementById(
+      "dash-wali-status-container",
+    );
+    if (statusContainer) {
+      statusContainer.innerHTML = `
+        <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-emerald-800 uppercase">Nilai Mapel</span>
+            <i class="fa-solid fa-circle-check text-emerald-600 text-lg"></i>
+          </div>
+          <p class="text-sm font-bold text-emerald-900">${listMapel.length} Mapel Terisi</p>
+          <span class="text-[11px] text-emerald-700">Lengkap 100%</span>
+        </div>
+
+        <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-emerald-800 uppercase">Ujian Tasmi'</span>
+            <i class="fa-solid fa-circle-check text-emerald-600 text-lg"></i>
+          </div>
+          <p class="text-sm font-bold text-emerald-900">Ujian Tasmi' Terdata</p>
+          <span class="text-[11px] text-emerald-700">Mumtaz / Jayyid</span>
+        </div>
+
+        <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-emerald-800 uppercase">Tahfidz Qur'an</span>
+            <i class="fa-solid fa-circle-check text-emerald-600 text-lg"></i>
+          </div>
+          <p class="text-sm font-bold text-emerald-900">Mutqin Juz 29 & 30</p>
+          <span class="text-[11px] text-emerald-700">Terisi</span>
+        </div>
+
+        <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-emerald-800 uppercase">Metode Ummi</span>
+            <i class="fa-solid fa-circle-check text-emerald-600 text-lg"></i>
+          </div>
+          <p class="text-sm font-bold text-emerald-900">Jilid & Halaman Active</p>
+          <span class="text-[11px] text-emerald-700">Siap Munaqosah</span>
+        </div>
+
+        <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-emerald-800 uppercase">Kehadiran Siswa</span>
+            <i class="fa-solid fa-circle-check text-emerald-600 text-lg"></i>
+          </div>
+          <p class="text-sm font-bold text-emerald-900">Rekap Absensi</p>
+          <span class="text-[11px] text-emerald-700">Sakit, Izin, Alpa Terisi</span>
+        </div>
+
+        <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-emerald-800 uppercase">Catatan Wali Kelas</span>
+            <i class="fa-solid fa-circle-check text-emerald-600 text-lg"></i>
+          </div>
+          <p class="text-sm font-bold text-emerald-900">Catatan Perkembangan</p>
+          <span class="text-[11px] text-emerald-700">Selesai Ditulis</span>
+        </div>
+      `;
+    }
   }
 }
 
@@ -678,6 +824,7 @@ function toggleSubMenuInput() {
 
 function switchTab(tabName) {
   const tabs = [
+    "dashboard",
     "setting-rapor",
     "input-mapel",
     "kelola-mapel",
@@ -727,7 +874,8 @@ function switchTab(tabName) {
     if (arrow) arrow.classList.add("rotate-180");
   }
 
-  if (tabName === "setting-rapor") populateFormSetting();
+  if (tabName === "dashboard") renderDashboard();
+  else if (tabName === "setting-rapor") populateFormSetting();
   else if (tabName === "kelola-mapel") renderTabelKelolaMapel();
   else if (tabName === "input-siswa") renderTabelSiswa();
   else if (tabName === "input-walikelas") renderTabelWaliKelas();
@@ -899,9 +1047,6 @@ function renderMapelTable() {
   });
 }
 
-/**
- * Render Tabel Wali Kelas Termasuk Username & Password Sesuai Kolom Header
- */
 function renderTabelWaliKelas() {
   const tbody = document.getElementById("table-walikelas-body");
   if (!tbody) return;
@@ -962,6 +1107,7 @@ function simpanWaliKelas(e) {
   document.getElementById("walikelas-password").value = "";
 
   renderTabelWaliKelas();
+  renderDashboard();
   renderPrintableData();
 }
 
@@ -981,6 +1127,7 @@ function hapusWaliKelas(kelas) {
   if (confirm(`Apakah Anda yakin ingin menghapus data Wali Kelas ${kelas}?`)) {
     dataWaliKelas = dataWaliKelas.filter((w) => w.kelas !== kelas);
     renderTabelWaliKelas();
+    renderDashboard();
     renderPrintableData();
   }
 }
